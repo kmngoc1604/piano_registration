@@ -18,26 +18,26 @@
         <!-- Header -->
         <div>
             <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Admin Dashboard</h1>
-            <p class="text-slate-500 mt-1">Manage piano class registrations</p>
+            <p class="text-slate-500 mt-1">Quản lý danh sách học viên đăng ký</p>
         </div>
 
         <!-- Stats Section -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
                 <div class="text-4xl font-bold text-slate-900" id="stat-total">0</div>
-                <div class="text-sm text-slate-500 mt-2">Total Registrations</div>
+                <div class="text-sm text-slate-500 mt-2">Tổng hồ sơ</div>
             </div>
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
                 <div class="text-4xl font-bold text-amber-500" id="stat-pending">0</div>
-                <div class="text-sm text-slate-500 mt-2">Pending</div>
+                <div class="text-sm text-slate-500 mt-2">Đang chờ (Pending)</div>
             </div>
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
                 <div class="text-4xl font-bold text-emerald-600" id="stat-approved">0</div>
-                <div class="text-sm text-slate-500 mt-2">Approved</div>
+                <div class="text-sm text-slate-500 mt-2">Đã duyệt (Approved)</div>
             </div>
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
                 <div class="text-4xl font-bold text-red-600" id="stat-rejected">0</div>
-                <div class="text-sm text-slate-500 mt-2">Rejected</div>
+                <div class="text-sm text-slate-500 mt-2">Đã từ chối (Rejected)</div>
             </div>
         </div>
 
@@ -45,17 +45,17 @@
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-4 items-center">
             <div class="relative flex-1 w-full">
                 <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" id="searchInput" placeholder="Search by name or email..." class="w-full pl-9 pr-4 py-2 rounded-md border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 transition">
+                <input type="text" id="searchInput" placeholder="Tìm theo tên hoặc email..." class="w-full pl-9 pr-4 py-2 rounded-md border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 transition">
             </div>
             <div class="flex gap-4 w-full md:w-auto">
                 <select id="statusFilter" class="py-2 px-3 rounded-md border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white min-w-[140px] flex-1 md:flex-none cursor-pointer">
-                    <option value="All Status">All Status</option>
+                    <option value="All Status">Tất cả Trạng thái</option>
                     <option value="Pending">Pending</option>
                     <option value="Approved">Approved</option>
                     <option value="Rejected">Rejected</option>
                 </select>
                 <select id="levelFilter" class="py-2 px-3 rounded-md border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white min-w-[140px] flex-1 md:flex-none cursor-pointer">
-                    <option value="All Levels">All Levels</option>
+                    <option value="All Levels">Tất cả Trình độ</option>
                     <option value="Mới bắt đầu">Mới bắt đầu</option>
                     <option value="Sơ cấp">Sơ cấp</option>
                     <option value="Trung cấp">Trung cấp</option>
@@ -70,12 +70,12 @@
                 <table class="w-full text-left text-sm whitespace-nowrap">
                     <thead class="bg-slate-50 border-b border-slate-200 text-slate-900 font-semibold">
                         <tr>
-                            <th class="px-6 py-4">Name</th>
-                            <th class="px-6 py-4">Email</th>
-                            <th class="px-6 py-4">Level</th>
-                            <th class="px-6 py-4">Goals</th>
-                            <th class="px-6 py-4">Status</th>
-                            <th class="px-6 py-4">Actions</th>
+                            <th class="px-6 py-4">Họ và tên</th>
+                            <th class="px-6 py-4">Liên hệ</th>
+                            <th class="px-6 py-4">Hình thức</th>
+                            <th class="px-6 py-4">Trình độ & Mục tiêu</th>
+                            <th class="px-6 py-4">Trạng thái</th>
+                            <th class="px-6 py-4">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody" class="divide-y divide-slate-100">
@@ -108,7 +108,6 @@
         const itemsPerPage = 10;
         let debounceTimer;
 
-        // DOM Elements
         const tbody = document.getElementById('tableBody');
         const statTotal = document.getElementById('stat-total');
         const statPending = document.getElementById('stat-pending');
@@ -121,7 +120,6 @@
         const statusFilter = document.getElementById('statusFilter');
         const levelFilter = document.getElementById('levelFilter');
 
-        // Lấy dữ liệu với Server-side Pagination
         async function fetchData() {
             tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center text-slate-500"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-3 text-slate-400"></i>Đang tải dữ liệu...</td></tr>`;
             lucide.createIcons();
@@ -148,11 +146,9 @@
             }
         }
 
-        // Render Bảng và Thống kê
         function renderData(result) {
             const { data, total, page, stats } = result;
 
-            // Cập nhật thẻ Thống kê (Dữ liệu do Server tính sẵn)
             statTotal.textContent = stats.Total;
             statPending.textContent = stats.Pending;
             statApproved.textContent = stats.Approved;
@@ -164,24 +160,30 @@
                 return;
             }
 
-            // Xóa HTML cũ
             tbody.innerHTML = '';
             
-            // Render từng hàng
             data.forEach(item => {
                 const dateObj = new Date(item.created_at);
                 const date = `${dateObj.getDate()}/${dateObj.getMonth()+1}/${dateObj.getFullYear()}`;
                 const level = item.music_level.split('-')[0].trim();
                 const goalShort = item.learning_goal.length > 30 ? item.learning_goal.substring(0, 30) + '...' : item.learning_goal;
 
-                // Tạo Badge trạng thái
                 let statusBadge = '';
                 if (item.status === 'Pending') {
                     statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">Pending</span>`;
                 } else if (item.status === 'Approved') {
-                    statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-emerald-700">Approved</span>`;
+                    statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-emerald-700 bg-emerald-50">Approved</span>`;
                 } else {
-                    statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-red-600">Rejected</span>`;
+                    statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-red-600 bg-red-50">Rejected</span>`;
+                }
+
+                // Render Learning Mode
+                let modeHTML = `<div class="inline-flex items-center gap-1.5 text-blue-600 bg-blue-50 px-2 py-1 rounded-md text-xs font-medium"><i data-lucide="wifi" class="w-3.5 h-3.5"></i> Học Online</div>`;
+                if (item.learning_mode === 'Trực tiếp') {
+                    modeHTML = `<div class="flex flex-col items-start gap-1">
+                        <div class="inline-flex items-center gap-1.5 text-slate-700 bg-slate-100 px-2 py-1 rounded-md text-xs font-medium"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-red-500"></i> Tại Cơ sở</div>
+                        <span class="text-xs text-slate-500 ml-1 font-medium">${item.location}</span>
+                    </div>`;
                 }
 
                 const tr = document.createElement('tr');
@@ -190,9 +192,15 @@
                         <div class="font-medium text-slate-900">${item.full_name}</div>
                         <div class="text-xs text-slate-400 mt-0.5">${date}</div>
                     </td>
-                    <td class="px-6 py-4 text-slate-500">${item.email}</td>
-                    <td class="px-6 py-4 text-slate-500">${level}</td>
-                    <td class="px-6 py-4 text-slate-500" title="${item.learning_goal}">${goalShort}</td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm font-medium text-slate-700">${item.phone}</div>
+                        <div class="text-xs text-slate-500 mt-0.5">${item.email}</div>
+                    </td>
+                    <td class="px-6 py-4">${modeHTML}</td>
+                    <td class="px-6 py-4" title="${item.learning_goal}">
+                        <div class="font-medium text-slate-700">${level}</div>
+                        <div class="text-xs text-slate-500 mt-0.5 whitespace-normal max-w-[200px] line-clamp-1">${goalShort}</div>
+                    </td>
                     <td class="px-6 py-4">${statusBadge}</td>
                     <td class="px-6 py-4">
                         <div class="flex items-center gap-2">
@@ -211,12 +219,9 @@
                 tbody.appendChild(tr);
             });
             lucide.createIcons();
-
-            // Render điều khiển phân trang
             renderPagination(total, page);
         }
 
-        // Hiển thị thanh phân trang
         function renderPagination(total, page) {
             const totalPages = Math.ceil(total / itemsPerPage) || 1;
             const start = (page - 1) * itemsPerPage + 1;
@@ -238,7 +243,6 @@
             fetchData();
         }
 
-        // --- CÁC HÀM XỬ LÝ (ACTIONS) ---
         async function updateStatus(id, newStatus) {
             try {
                 const response = await fetch(`/api/admin/registrations/${id}/status`, {
@@ -264,28 +268,16 @@
             }
         }
 
-        // --- LẮNG NGHE SỰ KIỆN LỌC DỮ LIỆU ---
-        
-        // Kỹ thuật Debounce cho Search: Chờ người dùng gõ xong 0.5s mới tìm kiếm
         searchInput.addEventListener('input', () => {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
-                currentPage = 1; // Trở về trang 1 khi tìm kiếm mới
+                currentPage = 1; 
                 fetchData();
             }, 500);
         });
+        statusFilter.addEventListener('change', () => { currentPage = 1; fetchData(); });
+        levelFilter.addEventListener('change', () => { currentPage = 1; fetchData(); });
 
-        statusFilter.addEventListener('change', () => {
-            currentPage = 1;
-            fetchData();
-        });
-
-        levelFilter.addEventListener('change', () => {
-            currentPage = 1;
-            fetchData();
-        });
-
-        // Chạy lần đầu tiên
         fetchData();
     </script>
 </body>

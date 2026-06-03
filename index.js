@@ -3,7 +3,7 @@ const { Pool } = require('pg');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const basicAuth = require('express-basic-auth');
-const { Resend } = require('resend'); // Đã thay thế Nodemailer bằng Resend
+const { Resend } = require('resend');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -23,9 +23,9 @@ app.get('/admin', adminAuth, (req, res) => {
 });
 
 // CẤU HÌNH GỬI EMAIL (Resend API)
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
-// API Lấy danh sách (Có Server-side Pagination & Lọc dữ liệu)
+// API Lấy danh sách
 app.get('/api/admin/registrations', adminAuth, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -161,15 +161,20 @@ const initDb = async () => {
       calculated_fee INT,
       notes TEXT,
       status VARCHAR(50) DEFAULT 'Pending',
+      learning_mode VARCHAR(50) DEFAULT 'Online',
+      location VARCHAR(100),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
   try {
     const client = await pool.connect();
     await client.query(createTableQuery);
-    try {
-      await client.query("ALTER TABLE registrations ADD COLUMN status VARCHAR(50) DEFAULT 'Pending'");
-    } catch (e) {}
+    
+    // Cập nhật CSDL cũ
+    try { await client.query("ALTER TABLE registrations ADD COLUMN status VARCHAR(50) DEFAULT 'Pending'"); } catch (e) {}
+    try { await client.query("ALTER TABLE registrations ADD COLUMN learning_mode VARCHAR(50) DEFAULT 'Online'"); } catch (e) {}
+    try { await client.query("ALTER TABLE registrations ADD COLUMN location VARCHAR(100)"); } catch (e) {}
+    
     client.release();
     console.log("Database table 'registrations' ensured.");
   } catch (err) {
@@ -183,11 +188,16 @@ app.post('/api/register', registerLimiter, async (req, res) => {
     full_name, phone, email, birth_year, 
     music_level, learning_goal, preferred_days, 
     preferred_times, class_tier, payment_method, 
-    calculated_fee, notes 
+    calculated_fee, notes,
+    learning_mode, location
   } = req.body;
 
   if (!full_name || !phone || !email || !birth_year) {
     return res.status(400).json({ success: false, message: 'Vui lòng điền đầy đủ các trường bắt buộc.' });
+  }
+  
+  if (learning_mode === 'Trực tiếp' && !location) {
+    return res.status(400).json({ success: false, message: 'Vui lòng chọn Tỉnh/Thành phố khi đăng ký học trực tiếp.' });
   }
 
   const nameRegex = /^[a-zA-ZÀ-ỿ\s]+$/;
@@ -216,9 +226,10 @@ app.post('/api/register', registerLimiter, async (req, res) => {
         full_name, phone, email, birth_year, 
         music_level, learning_goal, preferred_days, 
         preferred_times, class_tier, payment_method, 
-        calculated_fee, notes, status
+        calculated_fee, notes, status,
+        learning_mode, location
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'Pending') 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'Pending', $13, $14) 
       RETURNING *;
     `;
     
@@ -226,7 +237,8 @@ app.post('/api/register', registerLimiter, async (req, res) => {
       full_name, phone, email, birth_year,
       music_level, learning_goal, preferred_days,
       preferred_times, class_tier, payment_method,
-      calculated_fee, notes
+      calculated_fee, notes,
+      learning_mode || 'Online', location || ''
     ];
     
     await client.query(insertQuery, values);
@@ -234,9 +246,10 @@ app.post('/api/register', registerLimiter, async (req, res) => {
 
     res.status(201).json({ success: true, message: 'Đăng ký thành công!' });
 
-    // Gửi Email trong Background bằng HTTP API của Resend
+    // Gửi Email
     if (process.env.RESEND_API_KEY) {
       const feeFormatted = parseInt(calculated_fee).toLocaleString('vi-VN');
+      const locationText = learning_mode === 'Trực tiếp' ? `(Tại ${location})` : '';
       
       const htmlContentStudent = `
           <div style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; color: #333;">
@@ -244,6 +257,7 @@ app.post('/api/register', registerLimiter, async (req, res) => {
             <p>Chào <strong>${full_name}</strong>,</p>
             <p>Chúng tôi đã nhận được thông tin đăng ký của bạn. Dưới đây là tóm tắt lịch học bạn đã chọn:</p>
             <ul style="background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; list-style: none;">
+              <li><strong>Hình thức học:</strong> ${learning_mode} ${locationText}</li>
               <li><strong>Khóa học:</strong> ${class_tier}</li>
               <li><strong>Hình thức đóng:</strong> ${payment_method}</li>
               <li><strong>Lịch học:</strong> ${preferred_days} (${preferred_times})</li>
@@ -260,37 +274,20 @@ app.post('/api/register', registerLimiter, async (req, res) => {
           <p><strong>Tên:</strong> ${full_name}</p>
           <p><strong>SĐT:</strong> ${phone}</p>
           <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Hình thức học:</strong> ${learning_mode} ${locationText}</p>
           <p><strong>Khóa học:</strong> ${class_tier} (${payment_method})</p>
           <p>Vui lòng đăng nhập trang Admin để xem chi tiết.</p>
         `;
         
-      // Lấy email của bạn từ biến môi trường (Ví dụ: quangminh@gmail.com)
       const myEmailAddress = process.env.MY_EMAIL_ADDRESS;
 
       if (myEmailAddress) {
-        // Gửi thông báo cho Admin (Gửi từ onboarding@resend.dev tới Email của bạn)
         resend.emails.send({
           from: 'Shizuka Piano <onboarding@resend.dev>',
           to: myEmailAddress,
           subject: `[Đăng ký mới] ${full_name}`,
           html: htmlContentAdmin
         }).catch(err => console.error("Lỗi gửi mail Admin qua Resend:", err));
-
-        // Ghi chú quan trọng về gói Miễn phí của Resend:
-        // Do chưa xác minh tên miền (Verify Domain) trên Resend, Resend CHỈ CHO PHÉP gửi email tới chính email đăng ký Resend của bạn.
-        // Cố gắng gửi tới email tùy ý của học viên sẽ bị lỗi (Resend chặn).
-        // Khi nào bạn có tên miền riêng và Verify xong, bạn có thể mở comment đoạn code bên dưới ra:
-        
-        /*
-        resend.emails.send({
-          from: 'info@ten-mien-cua-ban.com',
-          to: email, // Email thực của học viên
-          subject: "Xác nhận đăng ký thành công - Shizuka Piano",
-          html: htmlContentStudent
-        }).catch(err => console.error("Lỗi gửi mail HV qua Resend:", err));
-        */
-      } else {
-         console.error("Vui lòng thêm biến môi trường MY_EMAIL_ADDRESS chứa email đăng ký Resend của bạn.");
       }
     }
 
@@ -303,3 +300,6 @@ app.post('/api/register', registerLimiter, async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+// Xuất app để Vercel có thể bắt được dưới dạng Serverless Function
+module.exports = app;
