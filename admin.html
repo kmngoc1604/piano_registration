@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Shizuka Piano</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    </style>
+</head>
+<body class="text-slate-900 p-4 md:p-8">
+    <div class="max-w-[1400px] mx-auto space-y-6">
+        <!-- Header -->
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Admin Dashboard</h1>
+            <p class="text-slate-500 mt-1">Manage piano class registrations</p>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
+                <div class="text-4xl font-bold text-slate-900" id="stat-total">0</div>
+                <div class="text-sm text-slate-500 mt-2">Total Registrations</div>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
+                <div class="text-4xl font-bold text-amber-500" id="stat-pending">0</div>
+                <div class="text-sm text-slate-500 mt-2">Pending</div>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
+                <div class="text-4xl font-bold text-emerald-600" id="stat-approved">0</div>
+                <div class="text-sm text-slate-500 mt-2">Approved</div>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
+                <div class="text-4xl font-bold text-red-600" id="stat-rejected">0</div>
+                <div class="text-sm text-slate-500 mt-2">Rejected</div>
+            </div>
+        </div>
+
+        <!-- Toolbar (Search & Filter) -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+            <div class="relative flex-1 w-full">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="searchInput" placeholder="Search by name or email..." class="w-full pl-9 pr-4 py-2 rounded-md border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 transition">
+            </div>
+            <div class="flex gap-4 w-full md:w-auto">
+                <select id="statusFilter" class="py-2 px-3 rounded-md border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white min-w-[140px] flex-1 md:flex-none cursor-pointer">
+                    <option value="All Status">All Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+                <select id="levelFilter" class="py-2 px-3 rounded-md border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white min-w-[140px] flex-1 md:flex-none cursor-pointer">
+                    <option value="All Levels">All Levels</option>
+                    <option value="Mới bắt đầu">Mới bắt đầu</option>
+                    <option value="Sơ cấp">Sơ cấp</option>
+                    <option value="Trung cấp">Trung cấp</option>
+                    <option value="Nâng cao">Nâng cao</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm whitespace-nowrap">
+                    <thead class="bg-slate-50 border-b border-slate-200 text-slate-900 font-semibold">
+                        <tr>
+                            <th class="px-6 py-4">Name</th>
+                            <th class="px-6 py-4">Email</th>
+                            <th class="px-6 py-4">Level</th>
+                            <th class="px-6 py-4">Goals</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-slate-100">
+                        <!-- Loading State -->
+                        <tr>
+                            <td colspan="6" class="px-6 py-12 text-center text-slate-500">
+                                <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-3 text-slate-400"></i>
+                                Đang tải dữ liệu...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination Footer -->
+            <div class="p-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white">
+                <div class="text-sm text-slate-500" id="paginationInfo">Showing 0 to 0 of 0 entries</div>
+                <div class="flex gap-2" id="paginationControls">
+                    <!-- Nút phân trang sẽ được chèn qua JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script xử lý -->
+    <script>
+        lucide.createIcons();
+        
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let debounceTimer;
+
+        // DOM Elements
+        const tbody = document.getElementById('tableBody');
+        const statTotal = document.getElementById('stat-total');
+        const statPending = document.getElementById('stat-pending');
+        const statApproved = document.getElementById('stat-approved');
+        const statRejected = document.getElementById('stat-rejected');
+        const paginationInfo = document.getElementById('paginationInfo');
+        const paginationControls = document.getElementById('paginationControls');
+        
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const levelFilter = document.getElementById('levelFilter');
+
+        // Lấy dữ liệu với Server-side Pagination
+        async function fetchData() {
+            tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center text-slate-500"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-3 text-slate-400"></i>Đang tải dữ liệu...</td></tr>`;
+            lucide.createIcons();
+
+            const queryParams = new URLSearchParams({
+                page: currentPage,
+                limit: itemsPerPage,
+                search: searchInput.value,
+                status: statusFilter.value,
+                level: levelFilter.value
+            });
+
+            try {
+                const response = await fetch('/api/admin/registrations?' + queryParams.toString());
+                if (response.status === 401) throw new Error('Vui lòng tải lại trang và đăng nhập!');
+                if (!response.ok) throw new Error('Không thể tải dữ liệu từ máy chủ.');
+                
+                const result = await response.json();
+                if (result.success) {
+                    renderData(result);
+                }
+            } catch (error) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center text-red-500 font-medium">${error.message}</td></tr>`;
+            }
+        }
+
+        // Render Bảng và Thống kê
+        function renderData(result) {
+            const { data, total, page, stats } = result;
+
+            // Cập nhật thẻ Thống kê (Dữ liệu do Server tính sẵn)
+            statTotal.textContent = stats.Total;
+            statPending.textContent = stats.Pending;
+            statApproved.textContent = stats.Approved;
+            statRejected.textContent = stats.Rejected;
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center text-slate-500">Không tìm thấy kết quả nào phù hợp.</td></tr>`;
+                renderPagination(0, 1);
+                return;
+            }
+
+            // Xóa HTML cũ
+            tbody.innerHTML = '';
+            
+            // Render từng hàng
+            data.forEach(item => {
+                const dateObj = new Date(item.created_at);
+                const date = `${dateObj.getDate()}/${dateObj.getMonth()+1}/${dateObj.getFullYear()}`;
+                const level = item.music_level.split('-')[0].trim();
+                const goalShort = item.learning_goal.length > 30 ? item.learning_goal.substring(0, 30) + '...' : item.learning_goal;
+
+                // Tạo Badge trạng thái
+                let statusBadge = '';
+                if (item.status === 'Pending') {
+                    statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">Pending</span>`;
+                } else if (item.status === 'Approved') {
+                    statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-emerald-700">Approved</span>`;
+                } else {
+                    statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-red-600">Rejected</span>`;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-6 py-4">
+                        <div class="font-medium text-slate-900">${item.full_name}</div>
+                        <div class="text-xs text-slate-400 mt-0.5">${date}</div>
+                    </td>
+                    <td class="px-6 py-4 text-slate-500">${item.email}</td>
+                    <td class="px-6 py-4 text-slate-500">${level}</td>
+                    <td class="px-6 py-4 text-slate-500" title="${item.learning_goal}">${goalShort}</td>
+                    <td class="px-6 py-4">${statusBadge}</td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-2">
+                            <button onclick="updateStatus(${item.id}, 'Approved')" class="p-1.5 border border-slate-200 rounded text-slate-600 hover:text-emerald-600 hover:border-emerald-200 transition" title="Approve">
+                                <i data-lucide="check" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="updateStatus(${item.id}, 'Rejected')" class="p-1.5 border border-slate-200 rounded text-slate-600 hover:text-slate-900 hover:border-slate-300 transition" title="Reject">
+                                <i data-lucide="x" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="deleteRegistration(${item.id})" class="p-1.5 border border-red-100 rounded text-red-500 hover:bg-red-50 hover:border-red-200 transition ml-1" title="Delete">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            lucide.createIcons();
+
+            // Render điều khiển phân trang
+            renderPagination(total, page);
+        }
+
+        // Hiển thị thanh phân trang
+        function renderPagination(total, page) {
+            const totalPages = Math.ceil(total / itemsPerPage) || 1;
+            const start = (page - 1) * itemsPerPage + 1;
+            const end = Math.min(page * itemsPerPage, total);
+            
+            paginationInfo.textContent = total === 0 
+                ? "Showing 0 entries" 
+                : `Showing ${start} to ${end} of ${total} entries`;
+
+            paginationControls.innerHTML = `
+                <button onclick="changePage(${page - 1})" ${page === 1 ? 'disabled' : ''} class="px-3 py-1.5 text-sm font-medium border border-slate-200 rounded-md bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed text-slate-700 transition">Trang trước</button>
+                <span class="px-3 py-1.5 text-sm font-semibold text-slate-700 flex items-center bg-slate-50 border border-slate-200 rounded-md">Trang ${page} / ${totalPages}</span>
+                <button onclick="changePage(${page + 1})" ${page === totalPages ? 'disabled' : ''} class="px-3 py-1.5 text-sm font-medium border border-slate-200 rounded-md bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed text-slate-700 transition">Trang tiếp</button>
+            `;
+        }
+
+        function changePage(newPage) {
+            currentPage = newPage;
+            fetchData();
+        }
+
+        // --- CÁC HÀM XỬ LÝ (ACTIONS) ---
+        async function updateStatus(id, newStatus) {
+            try {
+                const response = await fetch(`/api/admin/registrations/${id}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                if (response.ok) fetchData();
+                else alert('Lỗi cập nhật trạng thái. Vui lòng thử lại.');
+            } catch (err) {
+                alert('Lỗi mạng. Vui lòng kiểm tra kết nối.');
+            }
+        }
+
+        async function deleteRegistration(id) {
+            if (!confirm('Bạn có chắc chắn muốn xóa hồ sơ này vĩnh viễn không? Hành động này không thể hoàn tác.')) return;
+            try {
+                const response = await fetch(`/api/admin/registrations/${id}`, { method: 'DELETE' });
+                if (response.ok) fetchData();
+                else alert('Lỗi xóa hồ sơ. Vui lòng thử lại.');
+            } catch (err) {
+                alert('Lỗi mạng. Vui lòng kiểm tra kết nối.');
+            }
+        }
+
+        // --- LẮNG NGHE SỰ KIỆN LỌC DỮ LIỆU ---
+        
+        // Kỹ thuật Debounce cho Search: Chờ người dùng gõ xong 0.5s mới tìm kiếm
+        searchInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                currentPage = 1; // Trở về trang 1 khi tìm kiếm mới
+                fetchData();
+            }, 500);
+        });
+
+        statusFilter.addEventListener('change', () => {
+            currentPage = 1;
+            fetchData();
+        });
+
+        levelFilter.addEventListener('change', () => {
+            currentPage = 1;
+            fetchData();
+        });
+
+        // Chạy lần đầu tiên
+        fetchData();
+    </script>
+</body>
+</html>
