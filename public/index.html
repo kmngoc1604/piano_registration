@@ -3,52 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng ký lớp học Piano</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Shizuka Piano - Đăng ký lớp học</title>
+    <!-- Tích hợp Tailwind CSS qua CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Tùy chỉnh CSS cho checkbox dạng nút bấm */
+        .checkbox-btn-input:checked + .checkbox-btn-label {
+            background-color: #000;
+            color: #fff;
+            border-color: #000;
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <div class="form-wrapper">
-            <h2>Đăng Ký Học Piano 🎹</h2>
-            <p class="subtitle">Hãy để âm nhạc làm đẹp thêm cuộc sống của bạn.</p>
-            
-            <form id="registrationForm">
-                <div class="form-group">
-                    <label for="fullName">Họ và Tên</label>
-                    <input type="text" id="fullName" name="fullName" required placeholder="Nhập họ và tên của bạn">
-                </div>
-                
-                <div class="form-group">
-                    <label for="phoneNumber">Số điện thoại</label>
-                    <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="Nhập số điện thoại">
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required placeholder="Nhập địa chỉ email">
-                </div>
-                
-                <div class="form-group">
-                    <label for="course">Khóa học đăng ký</label>
-                    <select id="course" name="course" required>
-                        <option value="" disabled selected>Chọn khóa học</option>
-                        <option value="Piano Cơ Bản">Piano Cơ Bản</option>
-                        <option value="Piano Nâng Cao">Piano Nâng Cao</option>
-                        <option value="Piano Trẻ Em">Piano Trẻ Em</option>
-                        <option value="Piano Đệm Hát">Piano Đệm Hát</option>
-                    </select>
-                </div>
-                
-                <button type="submit" id="submitBtn">Đăng Ký Ngay</button>
-            </form>
-
-            <div id="notification" class="notification hidden">
-                <!-- Message will be injected here via JS -->
+<body class="bg-gray-100 min-h-screen p-4 md:p-8 font-sans text-gray-800">
+    <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="p-8">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="text-4xl mb-2">🎵</div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Shizuka Piano</h1>
+                <p class="text-gray-500">Form đăng ký tham gia lớp học piano của Shizuka</p>
             </div>
+
+            <!-- Form Đăng Ký -->
+            <form id="registerForm" class="space-y-8">
+                
+                <!-- Section 1: Thông tin cá nhân -->
+                <div>
+                    <h2 class="text-xl font-semibold mb-4 border-b pb-2">1. Thông tin cá nhân</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Họ và tên *</label>
+                            <input type="text" name="full_name" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none" placeholder="Nhập họ và tên">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Số điện thoại *</label>
+                                <input type="tel" name="phone" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none" placeholder="Nhập số điện thoại">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                                <input type="email" name="email" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none" placeholder="Nhập email">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Năm sinh *</label>
+                            <input type="number" name="birth_year" required min="1900" max="2024" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none" placeholder="VD: 1998">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Trình độ âm nhạc -->
+                <div>
+                    <h2 class="text-xl font-semibold mb-4 border-b pb-2">2. Trình độ âm nhạc</h2>
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="radio" name="music_level" value="Mới bắt đầu" required class="w-4 h-4 text-black focus:ring-black border-gray-300">
+                            <span class="text-gray-700">Mới bắt đầu</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="radio" name="music_level" value="Sơ cấp" class="w-4 h-4 text-black focus:ring-black border-gray-300">
+                            <span class="text-gray-700">Sơ cấp</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="radio" name="music_level" value="Trung cấp" class="w-4 h-4 text-black focus:ring-black border-gray-300">
+                            <span class="text-gray-700">Trung cấp</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="radio" name="music_level" value="Nâng cao" class="w-4 h-4 text-black focus:ring-black border-gray-300">
+                            <span class="text-gray-700">Nâng cao</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Section 3: Mục tiêu học tập -->
+                <div>
+                    <h2 class="text-xl font-semibold mb-4 border-b pb-2">3. Mục tiêu học tập</h2>
+                    <textarea name="learning_goal" rows="3" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none" placeholder="Bạn muốn đạt được điều gì sau khóa học?"></textarea>
+                </div>
+
+                <!-- Section 4: Lịch học ưu tiên -->
+                <div>
+                    <h2 class="text-xl font-semibold mb-4 border-b pb-2">4. Lịch học ưu tiên</h2>
+                    
+                    <!-- Ngày học -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Ngày học (có thể chọn nhiều) *</label>
+                        <div class="flex flex-wrap gap-2">
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="preferred_days" value="Thứ 2" class="checkbox-btn-input hidden">
+                                <div class="checkbox-btn-label px-4 py-2 border rounded-lg transition-colors hover:bg-gray-50 text-sm">Thứ 2</div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="preferred_days" value="Thứ 3" class="checkbox-btn-input hidden">
+                                <div class="checkbox-btn-label px-4 py-2 border rounded-lg transition-colors hover:bg-gray-50 text-sm">Thứ 3</div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="preferred_days" value="Thứ 4" class="checkbox-btn-input hidden">
+                                <div class="checkbox-btn-label px-4 py-2 border rounded-lg transition-colors hover:bg-gray-50 text-sm">Thứ 4</div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="preferred_days" value="Thứ 5" class="checkbox-btn-input hidden">
+                                <div class="checkbox-btn-label px-4 py-2 border rounded-lg transition-colors hover:bg-gray-50 text-sm">Thứ 5</div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="preferred_days" value="Thứ 6" class="checkbox-btn-input hidden">
+                                <div class="checkbox-btn-label px-4 py-2 border rounded-lg transition-colors hover:bg-gray-50 text-sm">Thứ 6</div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="preferred_days" value="Thứ 7" class="checkbox-btn-input hidden">
+                                <div class="checkbox-btn-label px-4 py-2 border rounded-lg transition-colors hover:bg-gray-50 text-sm">Thứ 7</div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="preferred_days" value="Chủ nhật" class="checkbox-btn-input hidden">
+                                <div class="checkbox-btn-label px-4 py-2 border rounded-lg transition-colors hover:bg-gray-50 text-sm">Chủ nhật</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Khung giờ -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Khung giờ (có thể chọn nhiều) *</label>
+                        <div class="flex flex-wrap gap-2">
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="preferred_times" value="Sáng (8h-12h)" class="checkbox-btn-input hidden">
+                                <div class="checkbox-btn-label px-4 py-2 border rounded-lg transition-colors hover:bg-gray-50 text-sm">Sáng (8h-12h)</div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="preferred_times" value="Chiều (13h-17h)" class="checkbox-btn-input hidden">
+                                <div class="checkbox-btn-label px-4 py-2 border rounded-lg transition-colors hover:bg-gray-50 text-sm">Chiều (13h-17h)</div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="preferred_times" value="Tối (18h-21h)" class="checkbox-btn-input hidden">
+                                <div class="checkbox-btn-label px-4 py-2 border rounded-lg transition-colors hover:bg-gray-50 text-sm">Tối (18h-21h)</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Gói học phí -->
+                <div>
+                    <h2 class="text-xl font-semibold mb-4 border-b pb-2">5. Gói học phí</h2>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Mức lớp</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="radio" name="class_tier" value="Lớp Mở lòng" checked class="w-4 h-4 text-black focus:ring-black border-gray-300">
+                                <span class="text-gray-700">Lớp Mở lòng (300.000 VND / buổi)</span>
+                            </label>
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="radio" name="class_tier" value="Lớp Nâng cao" class="w-4 h-4 text-black focus:ring-black border-gray-300">
+                                <span class="text-gray-700">Lớp Nâng cao (400.000 VND / buổi)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phương thức thanh toán</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="radio" name="payment_method" value="Đóng theo từng buổi" checked class="w-4 h-4 text-black focus:ring-black border-gray-300">
+                                <span class="text-gray-700">Đóng theo từng buổi</span>
+                            </label>
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="radio" name="payment_method" value="Đóng theo tháng" class="w-4 h-4 text-black focus:ring-black border-gray-300">
+                                <span class="text-gray-700">Đóng theo tháng (Giảm 10%)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Hộp hiển thị Học phí dự kiến -->
+                    <div class="bg-gray-50 p-6 rounded-lg text-center border border-gray-200">
+                        <p class="text-gray-500 mb-1 text-sm font-medium">Học phí dự kiến:</p>
+                        <p id="feeDisplay" class="text-3xl font-bold text-gray-900">300.000 VND</p>
+                    </div>
+                </div>
+
+                <!-- Section 6: Ghi chú -->
+                <div>
+                    <h2 class="text-xl font-semibold mb-4 border-b pb-2">6. Ghi chú</h2>
+                    <textarea name="notes" rows="3" maxlength="500" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none" placeholder="Ghi chú thêm (không bắt buộc, tối đa 500 ký tự)"></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="submitBtn" class="w-full bg-black text-white font-semibold py-4 rounded-lg hover:bg-gray-800 transition-colors shadow-md">
+                    Gửi đơn đăng ký
+                </button>
+                
+                <div id="notification" class="hidden p-4 rounded-lg text-center mt-4 font-medium"></div>
+            </form>
         </div>
     </div>
-    
-    <script src="script.js"></script>
+
+    <!-- LOGIC JAVASCRIPT -->
+    <script>
+        const form = document.getElementById('registerForm');
+        const classTierRadios = document.querySelectorAll('input[name="class_tier"]');
+        const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
+        const feeDisplay = document.getElementById('feeDisplay');
+        const submitBtn = document.getElementById('submitBtn');
+        const notification = document.getElementById('notification');
+
+        let calculatedFee = 300000; // Giá trị khởi tạo mặc định
+
+        // Hàm tính toán tiền
+        function calculateFee() {
+            const classTier = document.querySelector('input[name="class_tier"]:checked').value;
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+
+            // Xác định giá 1 buổi
+            let pricePerSession = (classTier === 'Lớp Mở lòng') ? 300000 : 400000;
+
+            if (paymentMethod === 'Đóng theo từng buổi') {
+                calculatedFee = pricePerSession;
+            } else {
+                // Đóng theo tháng: (Giá 1 buổi * 8 buổi) * 0.9
+                calculatedFee = (pricePerSession * 8) * 0.9;
+            }
+
+            // Định dạng số tiền Việt Nam (VND)
+            feeDisplay.textContent = calculatedFee.toLocaleString('vi-VN') + ' VND';
+        }
+
+        // Lắng nghe thay đổi của các Radio box
+        classTierRadios.forEach(radio => radio.addEventListener('change', calculateFee));
+        paymentMethodRadios.forEach(radio => radio.addEventListener('change', calculateFee));
+
+        // Xử lý gửi Form
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Trích xuất các checkbox (Ngày học, Khung giờ) thành mảng
+            const daysChecked = Array.from(document.querySelectorAll('input[name="preferred_days"]:checked')).map(cb => cb.value);
+            const timesChecked = Array.from(document.querySelectorAll('input[name="preferred_times"]:checked')).map(cb => cb.value);
+
+            // Bắt lỗi nếu không chọn ngày/giờ
+            if (daysChecked.length === 0) {
+                alert("Vui lòng chọn ít nhất một Ngày học ưu tiên.");
+                return;
+            }
+            if (timesChecked.length === 0) {
+                alert("Vui lòng chọn ít nhất một Khung giờ ưu tiên.");
+                return;
+            }
+
+            // Đóng gói dữ liệu
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Ghi đè lại mảng thành dạng chuỗi nối nhau bằng dấu phẩy
+            data.preferred_days = daysChecked.join(', ');
+            data.preferred_times = timesChecked.join(', ');
+            data.calculated_fee = calculatedFee;
+
+            // Hiệu ứng Loading nút gửi
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Đang xử lý...';
+            submitBtn.classList.add('opacity-70');
+            notification.classList.add('hidden');
+
+            try {
+                // Gửi dữ liệu qua API backend
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                // Xóa trạng thái thông báo cũ
+                notification.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+
+                if (response.ok && result.success) {
+                    notification.textContent = 'Đăng ký thành công! Shizuka Piano sẽ liên hệ với bạn sớm nhất.';
+                    notification.classList.add('bg-green-100', 'text-green-700');
+                    form.reset(); // Xóa trắng form
+                    calculateFee(); // Reset lại tiền hiển thị
+                } else {
+                    notification.textContent = result.message || 'Có lỗi xảy ra. Vui lòng thử lại.';
+                    notification.classList.add('bg-red-100', 'text-red-700');
+                }
+            } catch (error) {
+                notification.classList.remove('hidden');
+                notification.classList.add('bg-red-100', 'text-red-700');
+                notification.textContent = 'Không thể kết nối đến máy chủ.';
+            } finally {
+                // Phục hồi nút gửi
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Gửi đơn đăng ký';
+                submitBtn.classList.remove('opacity-70');
+            }
+        });
+    </script>
 </body>
 </html>
