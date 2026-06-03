@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký lớp học Piano</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="form-wrapper">
+            <h2>Đăng Ký Học Piano 🎹</h2>
+            <p class="subtitle">Hãy để âm nhạc làm đẹp thêm cuộc sống của bạn.</p>
+            
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="fullName">Họ và Tên</label>
+                    <input type="text" id="fullName" name="fullName" required placeholder="Nhập họ và tên của bạn">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phoneNumber">Số điện thoại</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="Nhập số điện thoại">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="Nhập địa chỉ email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="course">Khóa học đăng ký</label>
+                    <select id="course" name="course" required>
+                        <option value="" disabled selected>Chọn khóa học</option>
+                        <option value="Piano Cơ Bản">Piano Cơ Bản</option>
+                        <option value="Piano Nâng Cao">Piano Nâng Cao</option>
+                        <option value="Piano Trẻ Em">Piano Trẻ Em</option>
+                        <option value="Piano Đệm Hát">Piano Đệm Hát</option>
+                    </select>
+                </div>
+                
+                <button type="submit" id="submitBtn">Đăng Ký Ngay</button>
+            </form>
+
+            <div id="notification" class="notification hidden">
+                <!-- Message will be injected here via JS -->
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

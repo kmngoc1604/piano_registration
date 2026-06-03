@@ -1,0 +1,14 @@
+{
+  "name": "piano-registration-app",
+  "version": "1.0.0",
+  "description": "A simple Node.js app for Piano class registration",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.11.5"
+  }
+}
