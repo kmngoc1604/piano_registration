@@ -28,7 +28,7 @@
             color: currentColor;
             width: 1rem;
             height: 1rem;
-            border: 1px solid #e2e8f0; /* slate-200 */
+            border: 1px solid #e2e8f0;
             border-radius: 50%;
             display: grid;
             place-content: center;
@@ -41,7 +41,7 @@
             border-radius: 50%;
             transform: scale(0);
             transition: 120ms transform ease-in-out;
-            box-shadow: inset 1em 1em #0f172a; /* slate-900 */
+            box-shadow: inset 1em 1em #0f172a;
             background-color: #0f172a;
         }
         input[type="radio"]:checked::before {
@@ -57,17 +57,17 @@
 
         /* Checkbox Buttons Styling (Ngày & Giờ) */
         .checkbox-btn-input:checked + .checkbox-btn-label {
-            background-color: #0f172a; /* slate-900 */
+            background-color: #0f172a;
             color: #ffffff;
             border-color: #0f172a;
         }
         .checkbox-btn-label {
             background-color: #ffffff;
             color: #0f172a;
-            border-color: #e2e8f0; /* slate-200 */
+            border-color: #e2e8f0;
         }
         .checkbox-btn-label:hover {
-            border-color: #cbd5e1; /* slate-300 */
+            border-color: #cbd5e1;
         }
         .checkbox-btn-input:checked + .checkbox-btn-label:hover {
             border-color: #0f172a;
@@ -96,7 +96,7 @@
             
             <div class="p-6 pt-0">
                 <!-- Form Area -->
-                <form id="registerForm" class="space-y-6">
+                <form id="registerForm" class="space-y-6" novalidate>
                     
                     <!-- Global Error -->
                     <div id="globalError" class="hidden flex gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -110,23 +110,27 @@
                         
                         <div class="space-y-2">
                             <label class="text-sm font-medium leading-none" for="fullName">Họ và tên *</label>
-                            <input type="text" id="fullName" name="fullName" required placeholder="Nguyễn Văn A" class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2">
+                            <input type="text" id="fullName" name="fullName" placeholder="Nguyễn Văn A" class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 transition-colors">
+                            <p id="err-fullName" class="text-xs text-red-600 mt-1 hidden"></p>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="space-y-2">
                                 <label class="text-sm font-medium leading-none" for="phone">Số điện thoại *</label>
-                                <input type="tel" id="phone" name="phone" required placeholder="0912345678" class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2">
+                                <input type="tel" id="phone" name="phone" placeholder="0912345678" class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 transition-colors">
+                                <p id="err-phone" class="text-xs text-red-600 mt-1 hidden"></p>
                             </div>
                             <div class="space-y-2">
                                 <label class="text-sm font-medium leading-none" for="email">Email *</label>
-                                <input type="email" id="email" name="email" required placeholder="email@example.com" class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2">
+                                <input type="email" id="email" name="email" placeholder="email@example.com" class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 transition-colors">
+                                <p id="err-email" class="text-xs text-red-600 mt-1 hidden"></p>
                             </div>
                         </div>
 
                         <div class="space-y-2">
                             <label class="text-sm font-medium leading-none" for="yearOfBirth">Năm sinh *</label>
-                            <input type="number" id="yearOfBirth" name="yearOfBirth" required min="1950" max="2024" placeholder="1998" class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2">
+                            <input type="text" id="yearOfBirth" name="yearOfBirth" placeholder="VD: 1998" class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 transition-colors">
+                            <p id="err-yearOfBirth" class="text-xs text-red-600 mt-1 hidden"></p>
                         </div>
                     </div>
 
@@ -156,7 +160,8 @@
                     <!-- Learning Goals -->
                     <div class="space-y-2 pt-2">
                         <label class="text-sm font-medium leading-none font-semibold" for="learningGoals">Mục tiêu học tập *</label>
-                        <textarea id="learningGoals" name="learningGoals" required rows="4" class="flex w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 h-24 mt-2" placeholder="Bạn muốn đạt được điều gì sau khóa học? (VD: Đệm hát cơ bản, thi chứng chỉ...)"></textarea>
+                        <textarea id="learningGoals" name="learningGoals" rows="4" class="flex w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 h-24 mt-2 transition-colors" placeholder="Bạn muốn đạt được điều gì sau khóa học? (VD: Đệm hát cơ bản, thi chứng chỉ...)"></textarea>
+                        <p id="err-learningGoals" class="text-xs text-red-600 mt-1 hidden"></p>
                     </div>
 
                     <!-- Preferred Schedule -->
@@ -195,6 +200,7 @@
                                     <div class="checkbox-btn-label border rounded-md py-2 px-3 text-center transition-all duration-200 font-medium text-sm">Chủ nhật</div>
                                 </label>
                             </div>
+                            <p id="err-preferredDays" class="text-xs text-red-600 mt-1 hidden"></p>
                         </div>
 
                         <div class="space-y-4">
@@ -213,6 +219,7 @@
                                     <div class="checkbox-btn-label border rounded-md py-3 px-4 text-center transition-all duration-200 font-medium text-sm">Tối (18h-21h)</div>
                                 </label>
                             </div>
+                            <p id="err-preferredTimeSlots" class="text-xs text-red-600 mt-1 hidden"></p>
                         </div>
                     </div>
 
@@ -261,7 +268,8 @@
                     <!-- Additional Notes -->
                     <div class="space-y-2 pt-2">
                         <label class="text-sm font-medium leading-none font-semibold" for="additionalNotes">Ghi chú thêm</label>
-                        <textarea id="additionalNotes" name="additionalNotes" rows="4" class="flex w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 h-24 mt-2" placeholder="Hãy cho chúng tôi biết bất cứ điều gì khác mà bạn muốn chúng tôi biết về bạn hoặc sở thích âm nhạc của bạn... (tối đa 500 ký tự)"></textarea>
+                        <textarea id="additionalNotes" name="additionalNotes" rows="4" class="flex w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 h-24 mt-2 transition-colors" placeholder="Hãy cho chúng tôi biết bất cứ điều gì khác mà bạn muốn chúng tôi biết về bạn hoặc sở thích âm nhạc của bạn... (tối đa 500 ký tự)"></textarea>
+                        <p id="err-additionalNotes" class="text-xs text-red-600 mt-1 hidden"></p>
                     </div>
 
                     <!-- Submit Button -->
@@ -319,35 +327,162 @@
         classLevelRadios.forEach(radio => radio.addEventListener('change', calculateFee));
         paymentPlanRadios.forEach(radio => radio.addEventListener('change', calculateFee));
 
+        // Hàm hiển thị / xóa lỗi
+        function showError(fieldId, message) {
+            const input = document.getElementById(fieldId);
+            const errObj = document.getElementById('err-' + fieldId);
+            if(input) input.classList.add('border-red-500', 'focus-visible:ring-red-500');
+            if(errObj) {
+                errObj.textContent = message;
+                errObj.classList.remove('hidden');
+            }
+        }
+
+        function clearError(fieldId) {
+            const input = document.getElementById(fieldId);
+            const errObj = document.getElementById('err-' + fieldId);
+            if(input) input.classList.remove('border-red-500', 'focus-visible:ring-red-500');
+            if(errObj) errObj.classList.add('hidden');
+        }
+
+        // Xóa lỗi khi người dùng bắt đầu gõ
+        ['fullName', 'phone', 'email', 'yearOfBirth', 'learningGoals', 'additionalNotes'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => clearError(id));
+        });
+        
+        // Xóa lỗi khi người dùng click vào Ngày/Giờ
+        document.querySelectorAll('input[name="preferredDays"]').forEach(cb => {
+            cb.addEventListener('change', () => clearError('preferredDays'));
+        });
+        document.querySelectorAll('input[name="preferredTimeSlots"]').forEach(cb => {
+            cb.addEventListener('change', () => clearError('preferredTimeSlots'));
+        });
+
+        function validateForm() {
+            let isValid = true;
+            
+            // Regex patterns
+            const nameRegex = /^[a-zA-ZÀ-ỿ\s]+$/;
+            const phoneRegex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            // Xóa toàn bộ lỗi cũ
+            ['fullName', 'phone', 'email', 'yearOfBirth', 'learningGoals', 'preferredDays', 'preferredTimeSlots', 'additionalNotes'].forEach(clearError);
+
+            // Validate Họ và tên
+            const fullName = form.fullName.value.trim();
+            if (!fullName) {
+                showError('fullName', 'Vui lòng nhập họ và tên của bạn.');
+                isValid = false;
+            } else if (fullName.length < 2) {
+                showError('fullName', 'Họ và tên phải có ít nhất 2 ký tự.');
+                isValid = false;
+            } else if (!nameRegex.test(fullName)) {
+                showError('fullName', 'Họ và tên không được chứa số hoặc ký tự đặc biệt.');
+                isValid = false;
+            }
+
+            // Validate Số điện thoại
+            const phone = form.phone.value.trim();
+            if (!phone) {
+                showError('phone', 'Vui lòng nhập số điện thoại.');
+                isValid = false;
+            } else if (!phoneRegex.test(phone) || phone.length !== 10) {
+                showError('phone', 'Số điện thoại phải là 10 chữ số và đúng định dạng nhà mạng Việt Nam.');
+                isValid = false;
+            }
+
+            // Validate Email
+            const email = form.email.value.trim();
+            if (!email) {
+                showError('email', 'Vui lòng nhập địa chỉ email.');
+                isValid = false;
+            } else if (!emailRegex.test(email)) {
+                showError('email', 'Vui lòng nhập địa chỉ email hợp lệ.');
+                isValid = false;
+            }
+
+            // Validate Năm sinh
+            const yob = form.yearOfBirth.value.trim();
+            if (!yob) {
+                showError('yearOfBirth', 'Vui lòng nhập năm sinh.');
+                isValid = false;
+            } else if (!/^\d{4}$/.test(yob)) {
+                showError('yearOfBirth', 'Năm sinh không hợp lệ (phải là 4 chữ số).');
+                isValid = false;
+            } else {
+                const y = parseInt(yob);
+                if (y < 1950 || y > 2024) {
+                    showError('yearOfBirth', 'Năm sinh phải từ năm 1950 đến 2024.');
+                    isValid = false;
+                }
+            }
+
+            // Validate Mục tiêu học tập
+            const learningGoals = form.learningGoals.value.trim();
+            if (!learningGoals) {
+                showError('learningGoals', 'Vui lòng mô tả mục tiêu học tập của bạn.');
+                isValid = false;
+            } else if (learningGoals.length < 5) {
+                showError('learningGoals', 'Mục tiêu học tập quá ngắn (tối thiểu 5 ký tự).');
+                isValid = false;
+            }
+
+            // Validate checkbox
+            const daysChecked = Array.from(document.querySelectorAll('input[name="preferredDays"]:checked'));
+            const timesChecked = Array.from(document.querySelectorAll('input[name="preferredTimeSlots"]:checked'));
+            
+            if (daysChecked.length === 0) {
+                showError('preferredDays', 'Vui lòng chọn ít nhất một Ngày học ưu tiên.');
+                isValid = false;
+            }
+            if (timesChecked.length === 0) {
+                showError('preferredTimeSlots', 'Vui lòng chọn ít nhất một Khung giờ ưu tiên.');
+                isValid = false;
+            }
+
+            // Validate Ghi chú
+            const additionalNotes = form.additionalNotes.value.trim();
+            if (additionalNotes.length > 500) {
+                showError('additionalNotes', 'Ghi chú không được vượt quá 500 ký tự.');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
         // Submit form
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             globalError.classList.add('hidden');
             
-            const daysChecked = Array.from(document.querySelectorAll('input[name="preferredDays"]:checked')).map(cb => cb.value);
-            const timesChecked = Array.from(document.querySelectorAll('input[name="preferredTimeSlots"]:checked')).map(cb => cb.value);
-
-            if (daysChecked.length === 0 || timesChecked.length === 0) {
-                globalErrorMsg.textContent = "Vui lòng chọn ít nhất một Ngày học ưu tiên và Khung giờ ưu tiên.";
-                globalError.classList.remove('hidden');
-                mainCard.scrollIntoView({ behavior: 'smooth' });
+            // Thực hiện validate form
+            if (!validateForm()) {
+                // Tự động cuộn màn hình đến lỗi đầu tiên
+                const firstError = document.querySelector('.border-red-500, #err-preferredDays:not(.hidden), #err-preferredTimeSlots:not(.hidden)');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
                 return;
             }
 
+            const daysChecked = Array.from(document.querySelectorAll('input[name="preferredDays"]:checked')).map(cb => cb.value);
+            const timesChecked = Array.from(document.querySelectorAll('input[name="preferredTimeSlots"]:checked')).map(cb => cb.value);
+
             const formData = new FormData(form);
             const data = {
-                full_name: formData.get('fullName'),
-                phone: formData.get('phone'),
-                email: formData.get('email'),
-                birth_year: formData.get('yearOfBirth'),
+                full_name: formData.get('fullName').trim(),
+                phone: formData.get('phone').trim(),
+                email: formData.get('email').trim(),
+                birth_year: parseInt(formData.get('yearOfBirth')),
                 music_level: formData.get('experienceLevel'),
-                learning_goal: formData.get('learningGoals'),
+                learning_goal: formData.get('learningGoals').trim(),
                 preferred_days: daysChecked.join(', '),
                 preferred_times: timesChecked.join(', '),
                 class_tier: formData.get('classLevel') === '300000' ? 'Lớp Mở lòng' : 'Lớp Nâng cao',
                 payment_method: formData.get('paymentPlan') === 'per-session' ? 'Đóng theo từng buổi' : 'Đóng theo tháng',
                 calculated_fee: parseInt(feeDisplay.textContent.replace(/\D/g, '')),
-                notes: formData.get('additionalNotes')
+                notes: formData.get('additionalNotes').trim()
             };
 
             submitBtn.disabled = true;
@@ -379,7 +514,7 @@
                     mainCard.scrollIntoView({ behavior: 'smooth' });
                 }
             } catch (error) {
-                globalErrorMsg.textContent = 'Không thể kết nối đến máy chủ.';
+                globalErrorMsg.textContent = 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại đường truyền mạng.';
                 globalError.classList.remove('hidden');
                 mainCard.scrollIntoView({ behavior: 'smooth' });
             } finally {
