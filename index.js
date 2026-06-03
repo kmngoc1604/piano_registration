@@ -3,7 +3,7 @@ const { Pool } = require('pg');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const basicAuth = require('express-basic-auth');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend'); // Đã thay thế Nodemailer bằng Resend
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -22,14 +22,8 @@ app.get('/admin', adminAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-// CẤU HÌNH GỬI EMAIL (Nodemailer)
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
+// CẤU HÌNH GỬI EMAIL (Resend API)
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // API Lấy danh sách (Có Server-side Pagination & Lọc dữ liệu)
 app.get('/api/admin/registrations', adminAuth, async (req, res) => {
@@ -46,7 +40,6 @@ app.get('/api/admin/registrations', adminAuth, async (req, res) => {
     let values = [];
     let paramIndex = 1;
 
-    // Xây dựng điều kiện WHERE động
     if (search) {
       conditions.push(`(full_name ILIKE $${paramIndex} OR email ILIKE $${paramIndex})`);
       values.push(`%${search}%`);
@@ -69,12 +62,10 @@ app.get('/api/admin/registrations', adminAuth, async (req, res) => {
 
     const client = await pool.connect();
     
-    // 1. Lấy tổng số bản ghi (phục vụ tính toán Phân trang)
     const countQuery = `SELECT COUNT(*) FROM registrations ${whereClause}`;
     const countResult = await client.query(countQuery, values);
     const total = parseInt(countResult.rows[0].count);
 
-    // 2. Lấy dữ liệu của trang hiện tại (LIMIT / OFFSET)
     const dataValues = [...values, limit, offset];
     const dataQuery = `
       SELECT * FROM registrations 
@@ -84,7 +75,6 @@ app.get('/api/admin/registrations', adminAuth, async (req, res) => {
     `;
     const dataResult = await client.query(dataQuery, dataValues);
     
-    // 3. Lấy dữ liệu Thống kê chung (Cards) không bị ảnh hưởng bởi search/filter
     const statsResult = await client.query(`SELECT status, COUNT(*) as count FROM registrations GROUP BY status`);
     let overallStats = { Total: 0, Pending: 0, Approved: 0, Rejected: 0 };
     statsResult.rows.forEach(row => {
@@ -244,14 +234,11 @@ app.post('/api/register', registerLimiter, async (req, res) => {
 
     res.status(201).json({ success: true, message: 'Đăng ký thành công!' });
 
-    // Gửi Email trong Background (Không chờ bằng await)
-    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    // Gửi Email trong Background bằng HTTP API của Resend
+    if (process.env.RESEND_API_KEY) {
       const feeFormatted = parseInt(calculated_fee).toLocaleString('vi-VN');
-      const mailToStudent = {
-        from: `"Shizuka Piano" <${process.env.EMAIL_USER}>`,
-        to: email,
-        subject: "Xác nhận đăng ký thành công - Shizuka Piano",
-        html: `
+      
+      const htmlContentStudent = `
           <div style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; color: #333;">
             <h2 style="color: #0f172a;">Cảm ơn bạn đã đăng ký lớp học Piano!</h2>
             <p>Chào <strong>${full_name}</strong>,</p>
@@ -266,25 +253,45 @@ app.post('/api/register', registerLimiter, async (req, res) => {
             <br/>
             <p>Trân trọng,<br/><strong>Shizuka Piano.</strong></p>
           </div>
-        `
-      };
-      
-      const mailToAdmin = {
-        from: `"Hệ thống Shizuka Piano" <${process.env.EMAIL_USER}>`,
-        to: process.env.EMAIL_USER,
-        subject: `[Đăng ký mới] ${full_name}`,
-        html: `
+        `;
+        
+      const htmlContentAdmin = `
           <h3>Có học viên mới vừa đăng ký:</h3>
           <p><strong>Tên:</strong> ${full_name}</p>
           <p><strong>SĐT:</strong> ${phone}</p>
           <p><strong>Email:</strong> ${email}</p>
           <p><strong>Khóa học:</strong> ${class_tier} (${payment_method})</p>
           <p>Vui lòng đăng nhập trang Admin để xem chi tiết.</p>
-        `
-      };
-    
-      transporter.sendMail(mailToStudent).catch(err => console.error("Lỗi gửi mail HV:", err));
-      transporter.sendMail(mailToAdmin).catch(err => console.error("Lỗi gửi mail Admin:", err));
+        `;
+        
+      // Lấy email của bạn từ biến môi trường (Ví dụ: quangminh@gmail.com)
+      const myEmailAddress = process.env.MY_EMAIL_ADDRESS;
+
+      if (myEmailAddress) {
+        // Gửi thông báo cho Admin (Gửi từ onboarding@resend.dev tới Email của bạn)
+        resend.emails.send({
+          from: 'Shizuka Piano <onboarding@resend.dev>',
+          to: myEmailAddress,
+          subject: `[Đăng ký mới] ${full_name}`,
+          html: htmlContentAdmin
+        }).catch(err => console.error("Lỗi gửi mail Admin qua Resend:", err));
+
+        // Ghi chú quan trọng về gói Miễn phí của Resend:
+        // Do chưa xác minh tên miền (Verify Domain) trên Resend, Resend CHỈ CHO PHÉP gửi email tới chính email đăng ký Resend của bạn.
+        // Cố gắng gửi tới email tùy ý của học viên sẽ bị lỗi (Resend chặn).
+        // Khi nào bạn có tên miền riêng và Verify xong, bạn có thể mở comment đoạn code bên dưới ra:
+        
+        /*
+        resend.emails.send({
+          from: 'info@ten-mien-cua-ban.com',
+          to: email, // Email thực của học viên
+          subject: "Xác nhận đăng ký thành công - Shizuka Piano",
+          html: htmlContentStudent
+        }).catch(err => console.error("Lỗi gửi mail HV qua Resend:", err));
+        */
+      } else {
+         console.error("Vui lòng thêm biến môi trường MY_EMAIL_ADDRESS chứa email đăng ký Resend của bạn.");
+      }
     }
 
   } catch (error) {
