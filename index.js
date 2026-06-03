@@ -68,7 +68,10 @@ app.get('/api/admin/registrations', adminAuth, async (req, res) => {
 
     const dataValues = [...values, limit, offset];
     const dataQuery = `
-      SELECT * FROM registrations 
+      SELECT *,
+        (SELECT COUNT(*) FROM registrations r2 WHERE r2.phone = registrations.phone) as phone_count,
+        (SELECT COUNT(*) FROM registrations r3 WHERE r3.email = registrations.email) as email_count
+      FROM registrations 
       ${whereClause} 
       ORDER BY created_at DESC 
       LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
@@ -149,8 +152,8 @@ const initDb = async () => {
     CREATE TABLE IF NOT EXISTS registrations (
       id SERIAL PRIMARY KEY,
       full_name VARCHAR(255) NOT NULL,
-      phone VARCHAR(50) UNIQUE NOT NULL,
-      email VARCHAR(255) UNIQUE NOT NULL,
+      phone VARCHAR(50) NOT NULL,
+      email VARCHAR(255) NOT NULL,
       birth_year INT NOT NULL,
       music_level VARCHAR(100) NOT NULL,
       learning_goal TEXT,
@@ -175,6 +178,12 @@ const initDb = async () => {
     try { await client.query("ALTER TABLE registrations ADD COLUMN learning_mode VARCHAR(50) DEFAULT 'Online'"); } catch (e) {}
     try { await client.query("ALTER TABLE registrations ADD COLUMN location VARCHAR(100)"); } catch (e) {}
     
+    // Gỡ bỏ thuộc tính UNIQUE để cho phép trùng lặp
+    try { await client.query("ALTER TABLE registrations DROP CONSTRAINT IF EXISTS registrations_phone_key"); } catch (e) {}
+    try { await client.query("ALTER TABLE registrations DROP CONSTRAINT IF EXISTS registrations_email_key"); } catch (e) {}
+    try { await client.query("ALTER TABLE registrations DROP CONSTRAINT IF EXISTS registrations_phone_unique"); } catch (e) {}
+    try { await client.query("ALTER TABLE registrations DROP CONSTRAINT IF EXISTS registrations_email_unique"); } catch (e) {}
+
     client.release();
     console.log("Database table 'registrations' ensured.");
   } catch (err) {
@@ -211,15 +220,7 @@ app.post('/api/register', registerLimiter, async (req, res) => {
   try {
     const client = await pool.connect();
 
-    const checkQuery = `SELECT id, email, phone FROM registrations WHERE email = $1 OR phone = $2`;
-    const checkResult = await client.query(checkQuery, [email, phone]);
-    
-    if (checkResult.rows.length > 0) {
-      client.release();
-      const existing = checkResult.rows[0];
-      if (existing.email === email) return res.status(400).json({ success: false, message: 'Địa chỉ Email này đã được đăng ký trước đó.' });
-      if (existing.phone === phone) return res.status(400).json({ success: false, message: 'Số điện thoại này đã được đăng ký trước đó.' });
-    }
+    // LƯU Ý: Đã gỡ bỏ tính năng chặn đăng ký trùng lặp ở đây.
 
     const insertQuery = `
       INSERT INTO registrations (
@@ -247,27 +248,9 @@ app.post('/api/register', registerLimiter, async (req, res) => {
     res.status(201).json({ success: true, message: 'Đăng ký thành công!' });
 
     // Gửi Email
-    if (process.env.RESEND_API_KEY) {
+    if (resend) {
       const feeFormatted = parseInt(calculated_fee).toLocaleString('vi-VN');
       const locationText = learning_mode === 'Trực tiếp' ? `(Tại ${location})` : '';
-      
-      const htmlContentStudent = `
-          <div style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; color: #333;">
-            <h2 style="color: #0f172a;">Cảm ơn bạn đã đăng ký lớp học Piano!</h2>
-            <p>Chào <strong>${full_name}</strong>,</p>
-            <p>Chúng tôi đã nhận được thông tin đăng ký của bạn. Dưới đây là tóm tắt lịch học bạn đã chọn:</p>
-            <ul style="background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; list-style: none;">
-              <li><strong>Hình thức học:</strong> ${learning_mode} ${locationText}</li>
-              <li><strong>Khóa học:</strong> ${class_tier}</li>
-              <li><strong>Hình thức đóng:</strong> ${payment_method}</li>
-              <li><strong>Lịch học:</strong> ${preferred_days} (${preferred_times})</li>
-              <li><strong>Học phí dự kiến:</strong> ${feeFormatted} VND</li>
-            </ul>
-            <p>Đội ngũ của chúng tôi sẽ sớm liên hệ qua số điện thoại <strong>${phone}</strong> để tư vấn chi tiết hơn. Hẹn gặp lại bạn tại lớp học!</p>
-            <br/>
-            <p>Trân trọng,<br/><strong>Shizuka Piano.</strong></p>
-          </div>
-        `;
         
       const htmlContentAdmin = `
           <h3>Có học viên mới vừa đăng ký:</h3>
@@ -301,5 +284,4 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-// Xuất app để Vercel có thể bắt được dưới dạng Serverless Function
 module.exports = app;

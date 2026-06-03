@@ -186,6 +186,12 @@
                     </div>`;
                 }
 
+                // Cảnh báo trùng lặp
+                let duplicateWarning = '';
+                if (parseInt(item.phone_count) > 1 || parseInt(item.email_count) > 1) {
+                    duplicateWarning = `<i data-lucide="triangle-alert" class="w-4 h-4 text-amber-500 ml-1.5 inline-block cursor-help" title="Thông tin liên hệ bị trùng lặp với hồ sơ khác"></i>`;
+                }
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="px-6 py-4">
@@ -193,7 +199,7 @@
                         <div class="text-xs text-slate-400 mt-0.5">${date}</div>
                     </td>
                     <td class="px-6 py-4">
-                        <div class="text-sm font-medium text-slate-700">${item.phone}</div>
+                        <div class="text-sm font-medium text-slate-700 flex items-center">${item.phone} ${duplicateWarning}</div>
                         <div class="text-xs text-slate-500 mt-0.5">${item.email}</div>
                     </td>
                     <td class="px-6 py-4">${modeHTML}</td>
