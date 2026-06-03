@@ -6,35 +6,69 @@
     <title>Shizuka Piano - Đăng ký lớp học</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: '#D4AF37',
+                        onyx: '#121212',
+                        ivory: '#FFFFF0',
+                        card: '#1a1a1a',
+                        inputbg: '#242424',
+                        inputborder: '#333333'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+        
         body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-serif { font-family: 'Playfair Display', serif; }
+
         /* Tùy chỉnh Radio Button */
         input[type="radio"] {
             -webkit-appearance: none; appearance: none;
-            background-color: #fff; margin: 0; font: inherit; color: currentColor;
-            width: 1rem; height: 1rem; border: 1px solid #e2e8f0; border-radius: 50%;
+            background-color: transparent; margin: 0; font: inherit; color: currentColor;
+            width: 1.1rem; height: 1.1rem; border: 1px solid #52525B; border-radius: 50%;
             display: grid; place-content: center; cursor: pointer;
         }
         input[type="radio"]::before {
             content: ""; width: 0.6rem; height: 0.6rem; border-radius: 50%;
             transform: scale(0); transition: 120ms transform ease-in-out;
-            box-shadow: inset 1em 1em #0f172a; background-color: #0f172a;
+            box-shadow: inset 1em 1em #D4AF37; background-color: #D4AF37;
         }
         input[type="radio"]:checked::before { transform: scale(1); }
-        input[type="radio"]:focus-visible { outline: 2px solid #0f172a; outline-offset: 2px; }
-        input[type="radio"]:checked { border-color: #0f172a; }
+        input[type="radio"]:focus-visible { outline: 2px solid #D4AF37; outline-offset: 2px; }
+        input[type="radio"]:checked { border-color: #D4AF37; }
 
         /* Checkbox Buttons */
         .checkbox-btn-input:checked + .checkbox-btn-label {
-            background-color: #0f172a; color: #ffffff; border-color: #0f172a;
+            background-color: #D4AF37; color: #121212; border-color: #D4AF37;
         }
-        .checkbox-btn-label { background-color: #ffffff; color: #0f172a; border-color: #e2e8f0; }
-        .checkbox-btn-label:hover { border-color: #cbd5e1; }
-        .checkbox-btn-input:checked + .checkbox-btn-label:hover { border-color: #0f172a; }
+        .checkbox-btn-label { background-color: transparent; color: #d1d5db; border-color: #52525B; }
+        .checkbox-btn-label:hover { border-color: #D4AF37; color: #D4AF37; }
+        .checkbox-btn-input:checked + .checkbox-btn-label:hover { border-color: #ebd076; }
         
+        /* Select option fix */
+        select option { background-color: #1a1a1a; color: #FFFFF0; }
+        
+        .hero-bg {
+            background-image: linear-gradient(to bottom, rgba(18, 18, 18, 0.6), rgba(18, 18, 18, 0.9)), url('/images/hero.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+
         /* Animation trượt mở */
         .slide-down {
             transition: all 0.3s ease-in-out;
@@ -43,137 +77,156 @@
             overflow: hidden;
         }
         .slide-down.show {
-            max-height: 200px;
+            max-height: 250px;
             opacity: 1;
             margin-top: 1rem;
         }
+
+        /* Input styling base */
+        .classic-input {
+            background-color: #242424;
+            border-color: #333333;
+            color: #FFFFF0;
+        }
+        .classic-input:focus {
+            outline: none;
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 1px #D4AF37;
+        }
     </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900">
-    <main class="container mx-auto px-4 py-12">
-        <div class="text-center mb-12">
+<body class="min-h-screen hero-bg text-ivory">
+    
+    <!-- Navbar Minimal -->
+    <nav class="w-full p-4 md:px-8 flex justify-start items-center relative z-10">
+        <a href="/" class="text-sm font-semibold tracking-wider text-gold uppercase hover:text-ivory transition flex items-center gap-2">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại
+        </a>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 z-10 relative">
+        <div class="text-center mb-10">
             <div class="flex items-center justify-center gap-3 mb-4">
-                <i data-lucide="music" class="w-8 h-8 text-slate-800"></i>
-                <h1 class="text-4xl font-bold text-slate-900">Shizuka Piano</h1>
+                <i data-lucide="music" class="w-8 h-8 text-gold"></i>
+                <h1 class="text-4xl md:text-5xl font-bold text-gold drop-shadow-md">Shizuka Piano</h1>
             </div>
-            <p class="text-xl text-slate-600">Form đăng ký tham gia lớp học piano của Shizuka</p>
+            <p class="text-lg md:text-xl text-gray-300 font-serif italic drop-shadow-md">Form đăng ký tham gia lớp học</p>
         </div>
 
-        <div class="w-full max-w-2xl mx-auto rounded-xl border border-slate-200 bg-white text-slate-950 shadow-sm" id="mainCard">
-            <div class="flex flex-col space-y-1.5 p-6">
-                <h3 class="text-3xl font-semibold leading-none tracking-tight">Đăng ký Lớp học Piano</h3>
-                <p class="text-sm text-slate-500 mt-2">Hãy cho chúng tôi biết về bạn và mục tiêu âm nhạc của bạn</p>
+        <div class="w-full max-w-2xl mx-auto rounded-xl border border-gold/30 bg-[#1a1a1a]/85 backdrop-blur-md shadow-2xl" id="mainCard">
+            <div class="flex flex-col space-y-1.5 p-6 border-b border-gold/10">
+                <h3 class="text-2xl font-serif text-gold">Đăng ký Nhập học</h3>
+                <p class="text-sm text-gray-400">Hãy cho chúng tôi biết về bạn và mục tiêu âm nhạc của bạn</p>
             </div>
             
-            <div class="p-6 pt-0">
-                <form id="registerForm" class="space-y-6" novalidate>
-                    <div id="globalError" class="hidden flex gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
-                        <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"></i>
-                        <p class="text-red-700 font-medium text-sm" id="globalErrorMsg"></p>
+            <div class="p-6">
+                <form id="registerForm" class="space-y-8" novalidate>
+                    <div id="globalError" class="hidden flex gap-3 p-4 bg-red-950/30 border border-red-500/50 rounded-lg">
+                        <i data-lucide="alert-circle" class="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5"></i>
+                        <p class="text-red-300 font-medium text-sm" id="globalErrorMsg"></p>
                     </div>
 
                     <!-- Personal Information -->
-                    <div class="space-y-4">
-                        <h3 class="font-semibold text-lg leading-none tracking-tight mb-4">Thông tin cá nhân</h3>
+                    <div class="space-y-5">
+                        <h3 class="font-serif text-xl text-gold border-l-2 border-gold pl-3">Thông tin cá nhân</h3>
                         
                         <div class="space-y-2">
-                            <label class="text-sm font-medium leading-none" for="fullName">Họ và tên *</label>
-                            <input type="text" id="fullName" name="fullName" placeholder="Nguyễn Văn A" class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 transition-colors">
-                            <p id="err-fullName" class="text-xs text-red-600 mt-1 hidden"></p>
+                            <label class="text-sm font-medium text-gray-300" for="fullName">Họ và tên *</label>
+                            <input type="text" id="fullName" name="fullName" placeholder="Nguyễn Văn A" class="classic-input flex h-11 w-full rounded-md border px-3 py-2 text-sm placeholder:text-gray-600 transition-colors">
+                            <p id="err-fullName" class="text-xs text-red-400 mt-1 hidden"></p>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div class="space-y-2">
-                                <label class="text-sm font-medium leading-none" for="phone">Số điện thoại *</label>
-                                <input type="tel" id="phone" name="phone" placeholder="0912345678" class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 transition-colors">
-                                <p id="err-phone" class="text-xs text-red-600 mt-1 hidden"></p>
+                                <label class="text-sm font-medium text-gray-300" for="phone">Số điện thoại *</label>
+                                <input type="tel" id="phone" name="phone" placeholder="0912345678" class="classic-input flex h-11 w-full rounded-md border px-3 py-2 text-sm transition-colors">
+                                <p id="err-phone" class="text-xs text-red-400 mt-1 hidden"></p>
                             </div>
                             <div class="space-y-2">
-                                <label class="text-sm font-medium leading-none" for="email">Email *</label>
-                                <input type="email" id="email" name="email" placeholder="email@example.com" class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 transition-colors">
-                                <p id="err-email" class="text-xs text-red-600 mt-1 hidden"></p>
+                                <label class="text-sm font-medium text-gray-300" for="email">Email *</label>
+                                <input type="email" id="email" name="email" placeholder="email@example.com" class="classic-input flex h-11 w-full rounded-md border px-3 py-2 text-sm transition-colors">
+                                <p id="err-email" class="text-xs text-red-400 mt-1 hidden"></p>
                             </div>
                         </div>
 
                         <div class="space-y-2">
-                            <label class="text-sm font-medium leading-none" for="yearOfBirth">Năm sinh *</label>
-                            <input type="text" id="yearOfBirth" name="yearOfBirth" placeholder="VD: 1998" class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 transition-colors">
-                            <p id="err-yearOfBirth" class="text-xs text-red-600 mt-1 hidden"></p>
+                            <label class="text-sm font-medium text-gray-300" for="yearOfBirth">Năm sinh *</label>
+                            <input type="text" id="yearOfBirth" name="yearOfBirth" placeholder="VD: 1998" class="classic-input flex h-11 w-full rounded-md border px-3 py-2 text-sm transition-colors">
+                            <p id="err-yearOfBirth" class="text-xs text-red-400 mt-1 hidden"></p>
                         </div>
                     </div>
 
                     <!-- MỚI: Hình thức học & Nơi ở -->
-                    <div class="space-y-4 pt-4 border-t border-slate-100">
-                        <h3 class="font-semibold text-lg leading-none tracking-tight mb-2">Hình thức học *</h3>
-                        <div class="flex gap-6">
+                    <div class="space-y-5 pt-6 border-t border-gold/10">
+                        <h3 class="font-serif text-xl text-gold border-l-2 border-gold pl-3">Hình thức học</h3>
+                        <div class="flex gap-8 mt-2">
                             <div class="flex items-center space-x-3">
                                 <input type="radio" id="mode-online" name="learningMode" value="Online" checked>
-                                <label for="mode-online" class="text-sm font-medium cursor-pointer text-slate-700">Học Online</label>
+                                <label for="mode-online" class="text-sm font-medium cursor-pointer text-gray-300">Học Online</label>
                             </div>
                             <div class="flex items-center space-x-3">
                                 <input type="radio" id="mode-offline" name="learningMode" value="Trực tiếp">
-                                <label for="mode-offline" class="text-sm font-medium cursor-pointer text-slate-700">Học Trực tiếp</label>
+                                <label for="mode-offline" class="text-sm font-medium cursor-pointer text-gray-300">Học Trực tiếp</label>
                             </div>
                         </div>
 
-                        <!-- Dropdown Tỉnh/Thành phố (Ẩn mặc định) -->
+                        <!-- Dropdown Tỉnh/Thành phố -->
                         <div id="locationContainer" class="slide-down space-y-4">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
                                 <div class="space-y-2">
-                                    <label class="text-sm font-medium leading-none" for="provinceSelect">Tỉnh/Thành phố *</label>
-                                    <select id="provinceSelect" class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 transition-colors cursor-pointer">
+                                    <label class="text-sm font-medium text-gray-300" for="provinceSelect">Tỉnh/Thành phố *</label>
+                                    <select id="provinceSelect" class="classic-input flex h-11 w-full rounded-md border px-3 py-2 text-sm transition-colors cursor-pointer">
                                         <option value="">-- Chọn Tỉnh/Thành phố --</option>
                                     </select>
-                                    <p id="err-provinceSelect" class="text-xs text-red-600 mt-1 hidden"></p>
+                                    <p id="err-provinceSelect" class="text-xs text-red-400 mt-1 hidden"></p>
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-sm font-medium leading-none" for="districtSelect">Quận/Huyện *</label>
-                                    <select id="districtSelect" class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 transition-colors cursor-pointer" disabled>
+                                    <label class="text-sm font-medium text-gray-300" for="districtSelect">Quận/Huyện *</label>
+                                    <select id="districtSelect" class="classic-input flex h-11 w-full rounded-md border px-3 py-2 text-sm transition-colors cursor-pointer disabled:opacity-50" disabled>
                                         <option value="">-- Chọn Quận/Huyện --</option>
                                     </select>
-                                    <p id="err-districtSelect" class="text-xs text-red-600 mt-1 hidden"></p>
+                                    <p id="err-districtSelect" class="text-xs text-red-400 mt-1 hidden"></p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Experience Level -->
-                    <div class="space-y-4 pt-4 border-t border-slate-100">
-                        <h3 class="font-semibold text-lg leading-none tracking-tight mb-4">Trình độ âm nhạc *</h3>
-                        <div class="grid gap-3">
+                    <div class="space-y-5 pt-6 border-t border-gold/10">
+                        <h3 class="font-serif text-xl text-gold border-l-2 border-gold pl-3">Trình độ âm nhạc</h3>
+                        <div class="grid gap-4 mt-2">
                             <div class="flex items-center space-x-3">
                                 <input type="radio" id="exp-beginner" name="experienceLevel" value="Mới bắt đầu" checked>
-                                <label for="exp-beginner" class="text-sm font-medium cursor-pointer text-slate-700">Mới bắt đầu - Chưa có kinh nghiệm</label>
+                                <label for="exp-beginner" class="text-sm font-medium cursor-pointer text-gray-300">Mới bắt đầu - Chưa có kinh nghiệm</label>
                             </div>
                             <div class="flex items-center space-x-3">
                                 <input type="radio" id="exp-elementary" name="experienceLevel" value="Sơ cấp">
-                                <label for="exp-elementary" class="text-sm font-medium cursor-pointer text-slate-700">Sơ cấp - Có kiến thức cơ bản</label>
+                                <label for="exp-elementary" class="text-sm font-medium cursor-pointer text-gray-300">Sơ cấp - Có kiến thức cơ bản</label>
                             </div>
                             <div class="flex items-center space-x-3">
                                 <input type="radio" id="exp-intermediate" name="experienceLevel" value="Trung cấp">
-                                <label for="exp-intermediate" class="text-sm font-medium cursor-pointer text-slate-700">Trung cấp - Chơi 1-3 năm</label>
+                                <label for="exp-intermediate" class="text-sm font-medium cursor-pointer text-gray-300">Trung cấp - Chơi 1-3 năm</label>
                             </div>
                             <div class="flex items-center space-x-3">
                                 <input type="radio" id="exp-advanced" name="experienceLevel" value="Nâng cao">
-                                <label for="exp-advanced" class="text-sm font-medium cursor-pointer text-slate-700">Nâng cao - Chơi 3+ năm</label>
+                                <label for="exp-advanced" class="text-sm font-medium cursor-pointer text-gray-300">Nâng cao - Chơi 3+ năm</label>
                             </div>
                         </div>
                     </div>
 
                     <div class="space-y-2 pt-2">
-                        <label class="text-sm font-medium leading-none font-semibold" for="learningGoals">Mục tiêu học tập *</label>
-                        <textarea id="learningGoals" name="learningGoals" rows="4" class="flex w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 h-24 mt-2 transition-colors"></textarea>
-                        <p id="err-learningGoals" class="text-xs text-red-600 mt-1 hidden"></p>
+                        <label class="text-sm font-medium text-gray-300" for="learningGoals">Mục tiêu học tập *</label>
+                        <textarea id="learningGoals" name="learningGoals" rows="4" class="classic-input flex w-full rounded-md border px-3 py-2 text-sm h-24 mt-2 transition-colors"></textarea>
+                        <p id="err-learningGoals" class="text-xs text-red-400 mt-1 hidden"></p>
                     </div>
 
                     <!-- Preferred Schedule -->
-                    <div class="space-y-6 pt-4 border-t border-slate-100">
-                        <h3 class="font-semibold text-lg leading-none tracking-tight">Lịch học ưu tiên</h3>
+                    <div class="space-y-6 pt-6 border-t border-gold/10">
+                        <h3 class="font-serif text-xl text-gold border-l-2 border-gold pl-3">Lịch học ưu tiên</h3>
                         
                         <div class="space-y-4">
-                            <label class="text-sm font-medium leading-none">Ngày ưu tiên *</label>
+                            <label class="text-sm font-medium text-gray-300">Ngày ưu tiên *</label>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 w-full">
-                                <!-- Checkbox days -->
                                 <label class="cursor-pointer"><input type="checkbox" name="preferredDays" value="Thứ 2" class="checkbox-btn-input hidden"><div class="checkbox-btn-label border rounded-md py-2 px-3 text-center transition-all duration-200 font-medium text-sm">Thứ 2</div></label>
                                 <label class="cursor-pointer"><input type="checkbox" name="preferredDays" value="Thứ 3" class="checkbox-btn-input hidden"><div class="checkbox-btn-label border rounded-md py-2 px-3 text-center transition-all duration-200 font-medium text-sm">Thứ 3</div></label>
                                 <label class="cursor-pointer"><input type="checkbox" name="preferredDays" value="Thứ 4" class="checkbox-btn-input hidden"><div class="checkbox-btn-label border rounded-md py-2 px-3 text-center transition-all duration-200 font-medium text-sm">Thứ 4</div></label>
@@ -182,77 +235,81 @@
                                 <label class="cursor-pointer"><input type="checkbox" name="preferredDays" value="Thứ 7" class="checkbox-btn-input hidden"><div class="checkbox-btn-label border rounded-md py-2 px-3 text-center transition-all duration-200 font-medium text-sm">Thứ 7</div></label>
                                 <label class="cursor-pointer"><input type="checkbox" name="preferredDays" value="Chủ nhật" class="checkbox-btn-input hidden"><div class="checkbox-btn-label border rounded-md py-2 px-3 text-center transition-all duration-200 font-medium text-sm">Chủ nhật</div></label>
                             </div>
-                            <p id="err-preferredDays" class="text-xs text-red-600 mt-1 hidden"></p>
+                            <p id="err-preferredDays" class="text-xs text-red-400 mt-1 hidden"></p>
                         </div>
 
                         <div class="space-y-4">
-                            <label class="text-sm font-medium leading-none">Khung giờ ưu tiên *</label>
+                            <label class="text-sm font-medium text-gray-300">Khung giờ ưu tiên *</label>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
                                 <label class="cursor-pointer"><input type="checkbox" name="preferredTimeSlots" value="Sáng (8h-12h)" class="checkbox-btn-input hidden"><div class="checkbox-btn-label border rounded-md py-3 px-4 text-center transition-all duration-200 font-medium text-sm">Sáng (8h-12h)</div></label>
                                 <label class="cursor-pointer"><input type="checkbox" name="preferredTimeSlots" value="Chiều (13h-17h)" class="checkbox-btn-input hidden"><div class="checkbox-btn-label border rounded-md py-3 px-4 text-center transition-all duration-200 font-medium text-sm">Chiều (13h-17h)</div></label>
                                 <label class="cursor-pointer"><input type="checkbox" name="preferredTimeSlots" value="Tối (18h-21h)" class="checkbox-btn-input hidden"><div class="checkbox-btn-label border rounded-md py-3 px-4 text-center transition-all duration-200 font-medium text-sm">Tối (18h-21h)</div></label>
                             </div>
-                            <p id="err-preferredTimeSlots" class="text-xs text-red-600 mt-1 hidden"></p>
+                            <p id="err-preferredTimeSlots" class="text-xs text-red-400 mt-1 hidden"></p>
                         </div>
                     </div>
 
                     <!-- Tuition Package -->
-                    <div class="space-y-6 border-t pt-6 mt-6 border-slate-100">
-                        <h3 class="font-semibold text-lg leading-none tracking-tight">Gói Học Phí</h3>
+                    <div class="space-y-6 border-t pt-6 border-gold/10">
+                        <h3 class="font-serif text-xl text-gold border-l-2 border-gold pl-3">Gói Học Phí</h3>
                         <div class="space-y-3">
-                            <label class="text-sm font-medium leading-none">Chọn mức lớp học *</label>
-                            <div class="grid gap-3 mt-2">
+                            <label class="text-sm font-medium text-gray-300">Chọn mức lớp học *</label>
+                            <div class="grid gap-4 mt-2">
                                 <div class="flex items-center space-x-3">
                                     <input type="radio" id="beginner-class" name="classLevel" value="250000" checked>
-                                    <label for="beginner-class" class="text-sm font-medium cursor-pointer text-slate-700">Lớp Mở lòng (250.000 VND / buổi)</label>
+                                    <label for="beginner-class" class="text-sm font-medium cursor-pointer text-gray-300">Lớp Mở lòng (250.000 VND / buổi)</label>
                                 </div>
                                 <div class="flex items-center space-x-3">
                                     <input type="radio" id="advanced-class" name="classLevel" value="350000">
-                                    <label for="advanced-class" class="text-sm font-medium cursor-pointer text-slate-700">Lớp Nâng cao (350.000 VND / buổi)</label>
+                                    <label for="advanced-class" class="text-sm font-medium cursor-pointer text-gray-300">Lớp Nâng cao (350.000 VND / buổi)</label>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="space-y-3 pt-2">
-                            <label class="text-sm font-medium leading-none">Chọn phương thức thanh toán *</label>
-                            <div class="grid gap-3 mt-2">
+                        <div class="space-y-3 pt-4">
+                            <label class="text-sm font-medium text-gray-300">Chọn phương thức thanh toán *</label>
+                            <div class="grid gap-4 mt-2">
                                 <div class="flex items-center space-x-3">
                                     <input type="radio" id="per-session" name="paymentPlan" value="per-session" checked>
-                                    <label for="per-session" class="text-sm font-medium cursor-pointer text-slate-700">Đóng theo từng buổi</label>
+                                    <label for="per-session" class="text-sm font-medium cursor-pointer text-gray-300">Đóng theo từng buổi</label>
                                 </div>
                                 <div class="flex items-center space-x-3">
                                     <input type="radio" id="monthly" name="paymentPlan" value="monthly">
-                                    <label for="monthly" class="text-sm font-medium cursor-pointer text-slate-700">Đóng theo tháng (Giảm 10%)</label>
+                                    <label for="monthly" class="text-sm font-medium cursor-pointer text-gray-300">Đóng theo tháng (Giảm 10%)</label>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="bg-slate-100 border border-slate-300 rounded-lg p-4 mt-6">
-                            <div class="space-y-2">
-                                <p class="text-sm text-slate-600 font-medium">Học phí dự kiến:</p>
-                                <p id="feeDisplay" class="text-3xl font-bold text-slate-900">250.000 VND</p>
-                                <p id="monthlyNote" class="text-xs text-slate-600 mt-2 hidden">*Khóa học tháng bao gồm 8 buổi (2 buổi/tuần x 4 tuần).</p>
+                        <div class="bg-inputbg border border-inputborder rounded-lg p-5 mt-6">
+                            <div class="space-y-2 text-center">
+                                <p class="text-sm text-gray-400 font-medium">Học phí dự kiến:</p>
+                                <p id="feeDisplay" class="text-3xl font-serif text-gold tracking-wider">250.000 VND</p>
+                                <p id="monthlyNote" class="text-xs text-gray-500 mt-2 hidden">*Khóa học tháng bao gồm 8 buổi (2 buổi/tuần x 4 tuần).</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="space-y-2 pt-2 border-t border-slate-100 pt-6">
-                        <label class="text-sm font-medium leading-none font-semibold" for="additionalNotes">Ghi chú thêm</label>
-                        <textarea id="additionalNotes" name="additionalNotes" rows="4" class="flex w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 h-24 mt-2 transition-colors"></textarea>
-                        <p id="err-additionalNotes" class="text-xs text-red-600 mt-1 hidden"></p>
+                    <div class="space-y-2 pt-6 border-t border-gold/10">
+                        <label class="text-sm font-medium text-gray-300" for="additionalNotes">Ghi chú thêm</label>
+                        <textarea id="additionalNotes" name="additionalNotes" rows="3" class="classic-input flex w-full rounded-md border px-3 py-2 text-sm h-24 mt-2 transition-colors placeholder:text-gray-600" placeholder:text-gray-600></textarea>
+                        <p id="err-additionalNotes" class="text-xs text-red-400 mt-1 hidden"></p>
                     </div>
 
-                    <button type="submit" id="submitBtn" class="bg-slate-900 text-slate-50 hover:bg-slate-900/90 h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 w-full mt-6 disabled:opacity-50 disabled:cursor-not-allowed">
-                        Gửi đơn đăng ký
+                    <button type="submit" id="submitBtn" class="bg-gold text-onyx hover:bg-[#ebd076] h-12 px-6 py-2 rounded-md text-sm font-bold tracking-widest uppercase transition-all shadow-[0_4px_14px_0_rgba(212,175,55,0.39)] w-full mt-8 disabled:opacity-50 disabled:cursor-not-allowed border border-gold hover:border-[#ebd076]">
+                        Gửi Hồ Sơ
                     </button>
                 </form>
 
-                <div id="successState" class="hidden mt-4 text-center space-y-4 p-8 bg-emerald-50 border border-emerald-200 rounded-xl">
-                    <i data-lucide="check-circle-2" class="w-16 h-16 text-emerald-600 mx-auto"></i>
-                    <h2 class="text-2xl font-bold text-emerald-900">Đơn đăng ký được nhận!</h2>
-                    <p class="text-emerald-800">Cảm ơn bạn đã đăng ký. Chúng tôi sẽ liên hệ với bạn sớm.</p>
+                <div id="successState" class="hidden mt-4 text-center space-y-4 p-8 bg-inputbg border border-gold rounded-xl shadow-lg">
+                    <i data-lucide="check-circle-2" class="w-16 h-16 text-gold mx-auto"></i>
+                    <h2 class="text-3xl font-serif text-gold">Hồ sơ đã được gửi!</h2>
+                    <p class="text-gray-300">Cảm ơn bạn đã đăng ký. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.</p>
                 </div>
             </div>
+        </div>
+        
+        <div class="text-center mt-12 mb-6">
+            <p class="text-xs text-gray-600 tracking-widest uppercase">&copy; 2024 Shizuka Piano. Nghệ thuật đích thực.</p>
         </div>
     </main>
 
@@ -276,7 +333,7 @@
                 });
             } catch (error) {
                 console.error("Lỗi lấy dữ liệu Tỉnh/Thành", error);
-                provinceSelect.innerHTML = '<option value="">Lỗi tải dữ liệu. Hãy tải lại trang.</option>';
+                provinceSelect.innerHTML = '<option value="">Lỗi tải dữ liệu.</option>';
             }
         }
         fetchVietnamLocations();
@@ -346,13 +403,21 @@
         function showError(fieldId, message) {
             const input = document.getElementById(fieldId);
             const errObj = document.getElementById('err-' + fieldId);
-            if(input) input.classList.add('border-red-500');
+            if(input) {
+                input.classList.add('border-red-500');
+                input.classList.remove('border-inputborder');
+            }
             if(errObj) { errObj.textContent = message; errObj.classList.remove('hidden'); }
         }
         function clearError(fieldId) {
             const input = document.getElementById(fieldId);
             const errObj = document.getElementById('err-' + fieldId);
-            if(input) input.classList.remove('border-red-500');
+            if(input) {
+                input.classList.remove('border-red-500');
+                if(!input.classList.contains('border-inputborder')) {
+                    input.classList.add('border-inputborder');
+                }
+            }
             if(errObj) errObj.classList.add('hidden');
         }
 
@@ -423,7 +488,7 @@
                 notes: form.additionalNotes.value.trim()
             };
 
-            submitBtn.disabled = true; submitBtn.textContent = 'Đang gửi...';
+            submitBtn.disabled = true; submitBtn.textContent = 'ĐANG GỬI HỒ SƠ...';
             try {
                 const response = await fetch('/api/register', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
@@ -432,8 +497,7 @@
                 if (response.ok && result.success) {
                     form.classList.add('hidden');
                     const mainCard = document.getElementById('mainCard');
-                    mainCard.classList.replace('border-slate-200', 'border-emerald-200');
-                    mainCard.classList.add('bg-emerald-50');
+                    mainCard.classList.replace('border-gold/30', 'border-gold');
                     mainCard.querySelector('.p-6').classList.add('hidden'); 
                     document.getElementById('successState').classList.remove('hidden');
                     mainCard.scrollIntoView({ behavior: 'smooth' });
@@ -446,7 +510,7 @@
                 document.getElementById('globalErrorMsg').textContent = 'Lỗi kết nối mạng.';
                 globalError.classList.remove('hidden');
             } finally {
-                submitBtn.disabled = false; submitBtn.textContent = 'Gửi đơn đăng ký';
+                submitBtn.disabled = false; submitBtn.textContent = 'GỬI HỒ SƠ';
             }
         });
     </script>

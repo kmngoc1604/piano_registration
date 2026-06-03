@@ -132,7 +132,15 @@ app.delete('/api/admin/registrations/:id', adminAuth, async (req, res) => {
 });
 // -----------------------------
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'landing.html'));
+});
+
+app.get('/signup', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'signup.html'));
+});
+
+app.use(express.static(path.join(__dirname, 'public'), { index: false }));
 
 const registerLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, 
@@ -252,6 +260,7 @@ app.post('/api/register', registerLimiter, async (req, res) => {
       const feeFormatted = parseInt(calculated_fee).toLocaleString('vi-VN');
       const locationText = learning_mode === 'Trực tiếp' ? `(Tại ${location})` : '';
         
+      // 1. Email cho Admin
       const htmlContentAdmin = `
           <h3>Có học viên mới vừa đăng ký:</h3>
           <p><strong>Tên:</strong> ${full_name}</p>
@@ -259,19 +268,43 @@ app.post('/api/register', registerLimiter, async (req, res) => {
           <p><strong>Email:</strong> ${email}</p>
           <p><strong>Hình thức học:</strong> ${learning_mode} ${locationText}</p>
           <p><strong>Khóa học:</strong> ${class_tier} (${payment_method})</p>
+          <br/>
+          <p><i>Vui lòng không trả lời email này do đây là hộp thư tự động.</i></p>
           <p>Vui lòng đăng nhập trang Admin để xem chi tiết.</p>
         `;
         
-      const myEmailAddress = process.env.MY_EMAIL_ADDRESS;
+      resend.emails.send({
+        from: 'Shizuka Piano Admin <alert@shizukapiano.info>',
+        to: 'huynhluu.thanhthao@gmail.com',
+        subject: `[Đăng ký mới] ${full_name}`,
+        html: htmlContentAdmin
+      }).catch(err => console.error("Lỗi gửi mail Admin qua Resend:", err));
 
-      if (myEmailAddress) {
-        resend.emails.send({
-          from: 'Shizuka Piano <onboarding@resend.dev>',
-          to: myEmailAddress,
-          subject: `[Đăng ký mới] ${full_name}`,
-          html: htmlContentAdmin
-        }).catch(err => console.error("Lỗi gửi mail Admin qua Resend:", err));
-      }
+      // 2. Email cho Khách hàng
+      const htmlContentUser = `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+            <h3 style="color: #0f172a;">Xin chào ${full_name},</h3>
+            <p>Cảm ơn bạn đã đăng ký tham gia lớp học tại <b>Shizuka Piano</b>.</p>
+            <p>Dưới đây là thông tin đăng ký của bạn:</p>
+            <ul style="background: #f8fafc; padding: 16px 32px; border-radius: 8px;">
+              <li style="margin-bottom: 8px;"><strong>Khóa học:</strong> ${class_tier}</li>
+              <li><strong>Hình thức:</strong> ${learning_mode} ${locationText}</li>
+            </ul>
+            <p>Chúng tôi sẽ sớm liên hệ với bạn qua số điện thoại <b>${phone}</b> để tư vấn lộ trình và lịch học phù hợp nhất.</p>
+            <br/>
+            <p>Trân trọng,</p>
+            <p><strong>Shizuka Piano</strong></p>
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
+            <p style="font-size: 12px; color: #64748b; font-style: italic;">Vui lòng không trả lời email này do đây là hộp thư tự động.</p>
+          </div>
+      `;
+
+      resend.emails.send({
+        from: 'Shizuka Piano <no-reply@shizukapiano.info>',
+        to: email,
+        subject: 'Xác nhận đăng ký lớp học tại Shizuka Piano',
+        html: htmlContentUser
+      }).catch(err => console.error("Lỗi gửi mail User qua Resend:", err));
     }
 
   } catch (error) {
