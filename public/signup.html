@@ -19,7 +19,7 @@
                         inputborder: '#333333'
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Playfair Display', 'serif'],
                         serif: ['Playfair Display', 'serif']
                     }
                 }
@@ -29,9 +29,9 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
         
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Playfair Display', serif; }
         h1, h2, h3, .font-serif { font-family: 'Playfair Display', serif; }
 
         /* Tùy chỉnh Radio Button */
@@ -107,8 +107,7 @@
     <main class="container mx-auto px-4 py-8 z-10 relative">
         <div class="text-center mb-10">
             <div class="flex items-center justify-center gap-3 mb-4">
-                <i data-lucide="music" class="w-8 h-8 text-gold"></i>
-                <h1 class="text-4xl md:text-5xl font-bold text-gold drop-shadow-md">Shizuka Piano</h1>
+                <img src="/images/logo.png" alt="Shizuka Piano Logo" class="h-16 md:h-20 mx-auto drop-shadow-md">
             </div>
             <p class="text-lg md:text-xl text-gray-300 font-serif italic drop-shadow-md">Form đăng ký tham gia lớp học</p>
         </div>
@@ -197,19 +196,19 @@
                         <div class="grid gap-4 mt-2">
                             <div class="flex items-center space-x-3">
                                 <input type="radio" id="exp-beginner" name="experienceLevel" value="Mới bắt đầu" checked>
-                                <label for="exp-beginner" class="text-sm font-medium cursor-pointer text-gray-300">Mới bắt đầu - Chưa có kinh nghiệm</label>
+                                <label for="exp-beginner" class="text-sm font-medium cursor-pointer text-gray-300"> Chưa có kinh nghiệm</label>
                             </div>
                             <div class="flex items-center space-x-3">
                                 <input type="radio" id="exp-elementary" name="experienceLevel" value="Sơ cấp">
-                                <label for="exp-elementary" class="text-sm font-medium cursor-pointer text-gray-300">Sơ cấp - Có kiến thức cơ bản</label>
+                                <label for="exp-elementary" class="text-sm font-medium cursor-pointer text-gray-300">Có kiến thức cơ bản</label>
                             </div>
                             <div class="flex items-center space-x-3">
                                 <input type="radio" id="exp-intermediate" name="experienceLevel" value="Trung cấp">
-                                <label for="exp-intermediate" class="text-sm font-medium cursor-pointer text-gray-300">Trung cấp - Chơi 1-3 năm</label>
+                                <label for="exp-intermediate" class="text-sm font-medium cursor-pointer text-gray-300">Chơi 1-3 năm</label>
                             </div>
                             <div class="flex items-center space-x-3">
                                 <input type="radio" id="exp-advanced" name="experienceLevel" value="Nâng cao">
-                                <label for="exp-advanced" class="text-sm font-medium cursor-pointer text-gray-300">Nâng cao - Chơi 3+ năm</label>
+                                <label for="exp-advanced" class="text-sm font-medium cursor-pointer text-gray-300">Chơi 3+ năm</label>
                             </div>
                         </div>
                     </div>
@@ -241,9 +240,9 @@
                         <div class="space-y-4">
                             <label class="text-sm font-medium text-gray-300">Khung giờ ưu tiên *</label>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-                                <label class="cursor-pointer"><input type="checkbox" name="preferredTimeSlots" value="Sáng (8h-12h)" class="checkbox-btn-input hidden"><div class="checkbox-btn-label border rounded-md py-3 px-4 text-center transition-all duration-200 font-medium text-sm">Sáng (8h-12h)</div></label>
+                                <label class="cursor-pointer"><input type="checkbox" name="preferredTimeSlots" value="Sáng (9h-11h)" class="checkbox-btn-input hidden"><div class="checkbox-btn-label border rounded-md py-3 px-4 text-center transition-all duration-200 font-medium text-sm">Sáng (8h-12h)</div></label>
                                 <label class="cursor-pointer"><input type="checkbox" name="preferredTimeSlots" value="Chiều (13h-17h)" class="checkbox-btn-input hidden"><div class="checkbox-btn-label border rounded-md py-3 px-4 text-center transition-all duration-200 font-medium text-sm">Chiều (13h-17h)</div></label>
-                                <label class="cursor-pointer"><input type="checkbox" name="preferredTimeSlots" value="Tối (18h-21h)" class="checkbox-btn-input hidden"><div class="checkbox-btn-label border rounded-md py-3 px-4 text-center transition-all duration-200 font-medium text-sm">Tối (18h-21h)</div></label>
+                                <label class="cursor-pointer"><input type="checkbox" name="preferredTimeSlots" value="Tối (18h-20h)" class="checkbox-btn-input hidden"><div class="checkbox-btn-label border rounded-md py-3 px-4 text-center transition-all duration-200 font-medium text-sm">Tối (18h-21h)</div></label>
                             </div>
                             <p id="err-preferredTimeSlots" class="text-xs text-red-400 mt-1 hidden"></p>
                         </div>
@@ -257,7 +256,7 @@
                             <div class="grid gap-4 mt-2">
                                 <div class="flex items-center space-x-3">
                                     <input type="radio" id="beginner-class" name="classLevel" value="250000" checked>
-                                    <label for="beginner-class" class="text-sm font-medium cursor-pointer text-gray-300">Lớp Mở lòng (250.000 VND / buổi)</label>
+                                    <label for="beginner-class" class="text-sm font-medium cursor-pointer text-gray-300">Lớp Cơ bản (250.000 VND / buổi)</label>
                                 </div>
                                 <div class="flex items-center space-x-3">
                                     <input type="radio" id="advanced-class" name="classLevel" value="350000">

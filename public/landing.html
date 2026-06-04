@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +8,18 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Fonts: Playfair Display for classic Serif -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
     <style>
         body {
             font-family: 'Playfair Display', serif;
-            background-color: #121212; /* Onyx Black */
-            color: #FFFFF0; /* Ivory */
+            background-color: #121212;
+            /* Onyx Black */
+            color: #FFFFF0;
+            /* Ivory */
         }
-        
+
         .hero-bg {
             /* Giảm độ tối để nhìn rõ hình ảnh cây đàn hơn */
             background-image: linear-gradient(to bottom, rgba(18, 18, 18, 0.1), rgba(18, 18, 18, 0.5)), url('/images/hero.png');
@@ -25,9 +30,10 @@
         }
 
         .text-gold {
-            color: #D4AF37; /* Metallic Gold */
+            color: #D4AF37;
+            /* Metallic Gold */
         }
-        
+
         .bg-gold {
             background-color: #D4AF37;
         }
@@ -44,32 +50,38 @@
         }
     </style>
 </head>
+
 <body class="min-h-screen flex flex-col hero-bg">
-    
+
     <!-- Navbar -->
     <nav class="w-full p-6 md:p-10 flex justify-between items-center z-10 relative">
-        <div class="text-2xl font-bold tracking-wider text-gold uppercase">
-            Shizuka Piano
+        <div class="tracking-wider">
+            <a href="/"><img src="/images/logo.png" alt="Shizuka Piano Logo" class="h-12 object-contain"></a>
         </div>
         <div>
-            <a href="/admin" class="text-sm tracking-widest text-[#FFFFF0] hover:text-gold transition duration-300 uppercase">Quản trị</a>
+            <a href="/admin"
+                class="text-sm tracking-widest text-[#FFFFF0] hover:text-gold transition duration-300 uppercase">Quản
+                trị</a>
         </div>
     </nav>
 
     <!-- Main Content -->
     <main class="flex-grow flex flex-col items-center justify-center px-4 z-10 relative text-center">
         <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-wide text-gold drop-shadow-lg">
-            Nghệ Thuật Âm Nhạc
+            SHIZUKA PIANO
         </h1>
-        <p class="text-lg md:text-2xl max-w-2xl mb-12 text-gray-300 italic font-light drop-shadow-md">
-            "Âm nhạc là tiếng nói của tâm hồn. Hãy để Shizuka Piano khơi dậy niềm đam mê và dẫn dắt bạn trên con đường nghệ thuật cổ điển."
-        </p>
-        
+
+        <div class="mb-10 w-full max-w-3xl px-4 animate-fade-in-up">
+            <img src="/images/banner.png" alt="Shizuka Piano Banner" class="w-full h-auto rounded-xl shadow-2xl border border-gold/40">
+        </div>
+
         <div class="flex flex-col sm:flex-row gap-6">
-            <a href="/signup" class="border border-gold text-gold px-10 py-4 text-lg tracking-widest uppercase transition-all duration-300 btn-hover">
+            <a href="/signup"
+                class="border border-gold text-gold px-10 py-4 text-lg tracking-widest uppercase transition-all duration-300 btn-hover">
                 Đăng ký học ngay
             </a>
-            <a href="#about" class="border border-transparent text-[#FFFFF0] px-10 py-4 text-lg tracking-widest uppercase transition-all duration-300 hover:text-gold">
+            <a href="#about"
+                class="border border-transparent text-[#FFFFF0] px-10 py-4 text-lg tracking-widest uppercase transition-all duration-300 hover:text-gold">
                 Tìm hiểu thêm
             </a>
         </div>
@@ -77,8 +89,9 @@
 
     <!-- Footer -->
     <footer class="w-full p-6 text-center text-sm text-gray-500 z-10 relative tracking-widest">
-        &copy; 2024 SHIZUKA PIANO. ALL RIGHTS RESERVED.
+        &copy; 2026 SHIZUKA PIANO. ALL RIGHTS RESERVED.
     </footer>
 
 </body>
+
 </html>

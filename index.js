@@ -273,13 +273,6 @@ app.post('/api/register', registerLimiter, async (req, res) => {
           <p>Vui lòng đăng nhập trang Admin để xem chi tiết.</p>
         `;
         
-      resend.emails.send({
-        from: 'Shizuka Piano Admin <alert@shizukapiano.info>',
-        to: 'huynhluu.thanhthao@gmail.com',
-        subject: `[Đăng ký mới] ${full_name}`,
-        html: htmlContentAdmin
-      }).catch(err => console.error("Lỗi gửi mail Admin qua Resend:", err));
-
       // 2. Email cho Khách hàng
       const htmlContentUser = `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
@@ -299,12 +292,21 @@ app.post('/api/register', registerLimiter, async (req, res) => {
           </div>
       `;
 
-      resend.emails.send({
-        from: 'Shizuka Piano <no-reply@shizukapiano.info>',
-        to: email,
-        subject: 'Xác nhận đăng ký lớp học tại Shizuka Piano',
-        html: htmlContentUser
-      }).catch(err => console.error("Lỗi gửi mail User qua Resend:", err));
+      await Promise.all([
+        resend.emails.send({
+          from: 'Shizuka Piano Admin <alert@shizukapiano.info>',
+          to: ['huynhluu.thanhthao@gmail.com', 'kminhngoc@gmail.com'],
+          subject: `[Đăng ký mới] ${full_name}`,
+          html: htmlContentAdmin
+        }).catch(err => console.error("Lỗi gửi mail Admin qua Resend:", err)),
+
+        resend.emails.send({
+          from: 'Shizuka Piano <no-reply@shizukapiano.info>',
+          to: email,
+          subject: 'Xác nhận đăng ký lớp học tại Shizuka Piano',
+          html: htmlContentUser
+        }).catch(err => console.error("Lỗi gửi mail User qua Resend:", err))
+      ]);
     }
 
   } catch (error) {
